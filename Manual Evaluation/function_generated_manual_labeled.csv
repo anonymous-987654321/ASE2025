@@ -1,0 +1,1931 @@
+,repo,file path,code,variables,called paragraphs,LOC,summary,Linked Programs,Called Programs,File Calls,granite generated summary,function name,refined summary2,reference coverage,hallucination detection
+104,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ZECS000.cbl,"       7200-WEB-CONVERSE.
+           MOVE FIVE-TWELVE      TO WEB-PATH-LENGTH.
+           MOVE ZEROES           TO NUMBER-OF-NULLS.
+           MOVE ZEROES           TO NUMBER-OF-SPACES.
+           MOVE FORTY            TO CONVERSE-LENGTH.
+           MOVE FIFTEEN          TO WEB-STATUS-LENGTH.
+           MOVE ZC-TRANID        TO URI-MAP.
+           MOVE 'D'              TO URI-MAP(5:1).
+
+           EXEC CICS INQUIRE URIMAP(URI-MAP)
+                PATH(URI-PATH)
+                NOHANDLE
+           END-EXEC.
+
+           STRING URI-PATH
+                  SLASH
+                  ZF-ZK-KEY
+                  DELIMITED BY '*'
+                  INTO WEB-PATH.
+
+           INSPECT WEB-PATH TALLYING NUMBER-OF-NULLS
+                   FOR ALL LOW-VALUES.
+           SUBTRACT NUMBER-OF-NULLS  FROM WEB-PATH-LENGTH.
+
+           INSPECT WEB-PATH TALLYING NUMBER-OF-SPACES
+                   FOR ALL SPACES.
+           SUBTRACT NUMBER-OF-SPACES FROM WEB-PATH-LENGTH.
+
+           MOVE DEPLICATE TO WEB-PATH(1:10).
+
+           EXEC CICS WEB CONVERSE
+                SESSTOKEN(SESSION-TOKEN)
+                PATH(WEB-PATH)
+                PATHLENGTH(WEB-PATH-LENGTH)
+                METHOD(WEB-METHOD)
+                MEDIATYPE(ZF-MEDIA)
+                INTO(CONVERSE-RESPONSE)
+                TOLENGTH(CONVERSE-LENGTH)
+                MAXLENGTH(CONVERSE-LENGTH)
+                STATUSCODE(WEB-STATUS-CODE)
+                STATUSLEN (WEB-STATUS-LENGTH)
+                STATUSTEXT(WEB-STATUS-ABSTIME)
+                NOOUTCONVERT
+                NOHANDLE
+           END-EXEC.","       01  TWELVE                 PIC S9(02) VALUE     12 COMP-3.
+
+       01  FIVE-TWELVE            PIC S9(08) VALUE    512 COMP.
+
+       01  FORTY                  PIC S9(08) VALUE     40 COMP.
+
+       01  FIFTEEN                PIC S9(08) VALUE     15 COMP.
+
+       01  SLASH                  PIC  X(01) VALUE '/'.
+
+       01  ZC-PARM.
+
+           02  ZC-TRANID          PIC  X(04) VALUE SPACES.
+
+       01  ZK-RECORD.
+
+           02  ZK-KEY             PIC X(255) VALUE LOW-VALUES.
+
+       01  URI-MAP                PIC  X(08) VALUE SPACES.
+
+       01  URI-PATH               PIC X(255) VALUE SPACES.
+
+       01  DEPLICATE              PIC  X(10) VALUE '/deplicate'.
+
+       01  NUMBER-OF-SPACES       PIC S9(08) COMP VALUE ZEROES.
+
+       01  NUMBER-OF-NULLS        PIC S9(08) COMP VALUE ZEROES.
+
+       01  WEB-METHOD             PIC S9(08) COMP VALUE ZEROES.
+
+       01  WEB-PATH-LENGTH        PIC S9(08) COMP VALUE 256.
+
+       01  SESSION-TOKEN          PIC  9(18) COMP VALUE ZEROES.
+
+       01  WEB-STATUS-CODE        PIC S9(04) COMP VALUE 00.
+
+       01  WEB-STATUS-LENGTH      PIC S9(08) COMP VALUE 15.
+
+       01  WEB-STATUS-ABSTIME     PIC  9(15) VALUE ZEROES.
+
+       01  WEB-PATH               PIC X(512) VALUE SPACES.
+
+       01  CONVERSE-LENGTH        PIC S9(08) COMP VALUE 40.
+
+       01  CONVERSE-RESPONSE      PIC  X(40) VALUE SPACES.
+
+       01  ZF-RECORD.
+
+           02  ZF-ZK-KEY          PIC  X(255).
+
+           02  ZF-MEDIA           PIC  X(56).
+",[],44,"Converse with the partner Data Center zECS. The first element of the path, which for normal processing is /resources, must be changed to /deplicate.",,,,No,7200-WEB-CONVERSE,"The COBOL code is used to perform a CICS (Customer Information Control System) Web Converse operation. It moves various data items to and from the program, including values for PATHLENGTH, MAXLENGTH, and STATUSLEN. The code then executes the CICS INQUIRE URIMAP and CICS WEB CONVERSE statements. Finally, it uses the INSPECT and STRING functions to manipulate the data items.",0.5,1
+25,debinix_openjensen,X-COBOL/X-COBOL/COBOL_Files/debinix_openjensen/wui-end-html.cbl,"       000-end-html.
+        
+           DISPLAY
+               ""</body>""
+               ""</html>""          
+           END-DISPLAY        
+        
+           EXIT PROGRAM",,[],7,dispaly html end-tags for browser output,,,,"### Response:
+This code is used to close the HTML body and html tags. It displays the closing body and html tags using the display statement and then exits the program with the exit program statement.",000-end-html,The COBOL code displays the closing body and html tags and then exits the program.,1,1
+40,shamrice_COBOL-Roguelike,X-COBOL/X-COBOL/COBOL_Files/shamrice_COBOL-Roguelike/display_help.cbl,"       main-procedure.
+
+           display space blank screen 
+
+           display ""Keyboard Commands:"" at 0107 underline highlight           
+           display 
+               "" arrows - move cursor"" at 0201
+               ""      b - toggle blocking tiles"" at 0301
+               ""      c - set tile character"" at 0401
+               ""      d - set enemy attributes"" at 0501
+               ""    f/g - set fore/background tile color"" at 0601
+               ""      h - toggle fg tile highlight"" at 0701
+               ""      k - toggle blinking tiles"" at 0801
+               ""  esc/q - quit editor"" at 0901
+               ""  space - place tile or enemy"" at 1001
+               ""    tab - toggle tile/enemy placement mode"" at 1101
+               ""     F1 - display this help screen."" at 1201
+               ""   o/F2 - save map data"" at 1301               
+               ""   l/F3 - load map data"" at 1401               
+               ""     F6 - toggle tile effect view on/off."" at 1501
+           end-display 
+
+           display ""Press [enter] for next page."" at 1901
+           accept omitted at 1950
+
+           display space blank screen 
+
+           display ""Mouse Commands"" at 0107 underline highlight 
+           display 
+               ""left click - place tile/enemy at mouse cursor position.""
+               at 0207
+               ""hold left click - continuous tile/enemy draw at cursor.""
+               at 0302
+           end-display 
+
+           display ""Press [enter] to return to editor."" at 1901
+           accept omitted at 1950
+           display space blank screen
+
+           goback.",,[],39,Displays the editor help screen,,,,"### Response:
+This code is part of a COBOL program that provides help information for a text adventure game editor. The program displays various keyboard and mouse commands, along with their functions, for the user to understand how to use the editor effectively. The user can navigate through the help screens using the Enter key and return to the editor when finished.",main-procedure,"This COBOL code is a main procedure that displays various messages and prompts to the user. The first display statement is a blank screen, followed by a list of keyboard commands and their descriptions. The second display statement is another blank screen, followed by a list of mouse commands and their descriptions. The code ends with a goback statement.",0.5,1
+39,shamrice_COBOL-Roguelike,X-COBOL/X-COBOL/COBOL_Files/shamrice_COBOL-Roguelike/display_debug.cbl,"       main-procedure.
+
+           display space blank screen
+
+           display ""Debug Info"" at 0115 with underline highlight 
+
+           display ""pscrpos: "" at 1960 l-player-scr-pos at 1970
+           display ""P delta: "" at 2101 l-player-pos-delta at 2110
+           display ""Pyx: "" at 2301 l-player-pos at 2305
+           display ""MAPyx: "" at 2240 l-temp-map-pos at 2246
+     
+           perform with test after until ws-exit 
+               accept ws-kb-input at 0125
+               if ws-kb-input = 'q' then 
+                   set ws-exit to true 
+               end-if 
+           end-perform 
+               
+           goback.","       01  ws-kb-input                  pic x.
+
+       01  ws-exit-sw                   pic a value 'N'.
+
+           88  ws-exit                  value 'Y'.
+
+       01  l-player.
+
+           05  l-player-pos.
+
+           05  l-player-pos-delta.    
+
+           05  l-player-scr-pos.  
+
+       01  l-temp-map-pos.
+",[],18,Module for engine to display debug information.,,,,"### Response:
+This code is part of a COBOL program that simulates a simple game. The main procedure displays a blank screen, followed by the text ""Debug Info"" in a specific position on the screen. It then displays various debug information related to the player's position and movement. The program then enters a loop where it waits for user input. If the user presses the 'q' key, the program exits. Otherwise, it continues to wait for input.",main-procedure,"This COBOL code is a main procedure that displays information on the screen and accepts keyboard input. The program uses variables to store the player's position, screen position, and keyboard input. The program uses a loop to accept keyboard input and exit the program if the input is 'q'.",1,1
+85,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ECS001.cbl,"       A1000-GET-INPUT-REQUEST.
+
+           MOVE LENGTH OF TERM-DATA          TO TERM-DATA-LEN.
+
+           EXEC CICS RECEIVE
+                INTO      ( TERM-DATA )
+                LENGTH    ( TERM-DATA-LEN )
+                MAXLENGTH ( TERM-DATA-LEN )
+                NOHANDLE
+           END-EXEC.
+
+           IF EIBRESP = DFHRESP(NORMAL) OR 6
+              GO TO A1000-EXIT
+           END-IF.","       01  TERM-DATA-LEN               PIC 9(04) COMP.
+
+       01  I                           PIC 9(04) COMP.
+
+       01  TERM-DATA.
+",['A1000-EXIT'],13,Use a URIMAP defintion to execute the service.,,,,"### Response:
+This code snippet is written in COBOL, which is a programming language used for business applications. The code defines an exit program named ""Z1000-EXIT"" that terminates the program when executed. The variable ""I"" is defined as a four-digit number with decimal places.",A1000-GET-INPUT-REQUEST,"The COBOL code is used to get input from a terminal and store it in the TERM-DATA variable. The length of the input is stored in the TERM-DATA-LEN variable. If there is an error during the receive operation, the code fills the TERM-DATA variable with spaces and stores the error response in the CICS-MSG-RESP and CICS-MSG-RESP2 variables. The code then moves an error message into the CICS-MSG-TEXT variable and stores it in the TERM-LINES(1) variable. Finally, the code calls the program that terminates the program to exit.",0.25,1
+70,cicsdev_cics-async-api-credit-card-application-example,X-COBOL/X-COBOL/COBOL_Files/cicsdev_cics-async-api-credit-card-application-example/GETNAME.cbl,"       MAINLINE SECTION.
+
+
+           EXEC CICS GET CONTAINER (INPUT-CONTAINER)
+                           INTO    ( ACCOUNT-NUMBER-IN )
+                           RESP    ( COMMAND-RESP )
+                           RESP2   ( COMMAND-RESP2 )
+           END-EXEC
+
+           IF ACCOUNT-NUMBER-IN = '0001'
+           THEN
+             MOVE 'PRADEEP GOHIL' TO CUSTOMER-NAME
+           ELSE
+             MOVE 'JOE BLOGS' TO CUSTOMER-NAME
+           END-IF
+
+           EXEC CICS PUT CONTAINER ( GETNAME-CONTAINER )
+                           FROM    ( CUSTOMER-NAME )
+                           RESP    ( COMMAND-RESP )
+                           RESP2   ( COMMAND-RESP2 )
+           END-EXEC
+
+           EXEC CICS RETURN
+           END-EXEC.","       1 ACCOUNT-NUMBER-IN.
+
+       1 RETURN-DATA.
+
+         2 CUSTOMER-NAME          PIC X(80) VALUE ' '.
+
+       1 CONTAINER-NAMES.
+
+         2 INPUT-CONTAINER    PIC X(16) VALUE 'INPUTCONTAINER  '.
+
+         2 GETNAME-CONTAINER  PIC X(16) VALUE 'GETNAMECONTAINER'.
+
+       1 COMMAND-RESP  PIC S9(8) COMP.
+
+       1 COMMAND-RESP2 PIC S9(8) COMP.
+",[],29,"GETNAME - Get the customer name details from the locally optimised data store. An account number is used to retrieve the full name of the customer. The customer names database is hosted on a different system within the same organisation. It is also evolving over time. Generally responses are near instant, although the service can slow down during peak usage.",,,,"### Response:
+This code is written in COBOL and it's used to retrieve data from an input container and then place that data into an output container. The code first checks if the account number is equal to '0001', and if so, it moves the name 'PRADEEP GOHIL' into the customer name variable. If the account number is not '0001', it moves the name 'JOE BLOGS' into the customer name variable. Then, it places the customer name variable into the output container using the CICS PUT CONTAINER command. Finally, it returns control back to the calling program using the CICS RETURN command.",MAINLINE,"The above COBOL code is a program that uses the CICS (Customer Information Control System) GET and PUT CONTAINER commands to retrieve and update data in a database. The program first retrieves the account number from the INPUT-CONTAINER and checks if it is equal to '0001'. If it is, the program moves the name 'PRADEEP GOHIL' to the CUSTOMER-NAME variable. If the account number is not '0001', the program moves the name 'JOE BLOGS' to the CUSTOMER-NAME variable. Then, the program uses the CICS PUT CONTAINER command to update the data in the GETNAME-CONTAINER with the new customer name. Finally, the program uses the CICS RETURN command to end the program.",0.5,1
+51,Martinfx_Cobol,X-COBOL/X-COBOL/COBOL_Files/Martinfx_Cobol/RandomNumbers.cbl,"       MAIN-PROCEDURE.
+
+            PERFORM GET-SEED.
+            PERFORM GENERATE-NUMBER.
+            GOBACK.
+
+           GET-SEED SECTION.
+           MOVE FUNCTION RANDOM(FUNCTION SECONDS-PAST-MIDNIGHT) TO SEED.
+
+           GENERATE-NUMBER SECTION.
+
+            PERFORM 10 TIMES
+              COMPUTE W-RESULT = (FUNCTION RANDOM * 100) + 1
+              DISPLAY ""Random number: "" W-RESULT
+            END-PERFORM.","           01 W-RESULT PIC 999.
+
+           01 SEED     PIC 9V999999999.
+","['GENERATE-NUMBER', 'GET-SEED']",19,Example of generating random numbers.,,,,"### Response:
+This code generates a random number between 4 and 6 using the RANDOM function in COBOL. The result is stored in the variable W-RESULT, which is then displayed on the screen using the DISPLAY statement.",MAIN-PROCEDURE,"The COBOL code above is a program that generates a random number. It starts by performing a procedure to initialize the SEED variable with a random value based on the current time. Then, it performs a procedure that uses the SEED variable to generate a random number between 1 and 100 and displays it 10 times. Finally, the program ends with the GOBACK statement.",1,1
+48,Martinfx_Cobol,X-COBOL/X-COBOL/COBOL_Files/Martinfx_Cobol/BubbleSort.cbl,"       MAIN-PROCEDURE.
+
+           PERFORM INIT-SEED.
+           PERFORM GENERATE-RANDOM-NUM.
+           PERFORM SORTING-ARRAY.
+           GOBACK.
+
+           INIT-SEED SECTION.
+           MOVE FUNCTION RANDOM(FUNCTION SECONDS-PAST-MIDNIGHT) TO SEED.
+
+           GENERATE-RANDOM-NUM SECTION.
+
+           PERFORM VARYING W-I FROM 1 BY 1 UNTIL W-I > W-LEN-ARR
+            PERFORM W-LEN-ARR TIMES
+              COMPUTE W-RAN-NUM = FUNCTION RANDOM *
+                            (W-MAX-NUM - W-MIN-NUM + 1) +
+                             W-MIN-NUM
+              END-PERFORM
+              MOVE W-RAN-NUM TO W-ARR(W-I)
+              DISPLAY 'Unsorted: ' W-ARR(W-I)
+            END-PERFORM.
+
+           SORTING-ARRAY SECTION.
+
+           PERFORM VARYING W-J FROM 1 BY 1 UNTIL W-J > W-LEN-ARR
+             PERFORM VARYING W-K FROM 1 BY 1 UNTIL W-K >= W-LEN-ARR
+               IF(W-ARR(W-K) > W-ARR(W-K + 1))
+                 MOVE W-ARR(W-K) TO W-TEMP
+                 MOVE W-ARR(W-K + 1) TO W-ARR(W-K)
+                 MOVE W-TEMP TO W-ARR(W-K + 1)
+               END-IF
+             END-PERFORM
+           END-PERFORM
+
+           PERFORM VARYING W-H FROM 1 BY 1 UNTIL W-H > W-LEN-ARR
+           DISPLAY 'Sorted: ' W-ARR(W-H)
+           END-PERFORM.","           78 W-LEN-ARR VALUE 10.
+
+           01 W-ARR PIC 99 OCCURS W-LEN-ARR TIMES.
+
+           01 W-J PIC 99 VALUE 1.
+
+           01 W-K PIC 99 VALUE 1.
+
+           01 W-I PIC 99 VALUE 1.
+
+           01 W-H PIC 99 VALUE 1.
+
+           01 W-TEMP PIC 99 VALUE 1.
+
+           01 W-MIN-NUM PIC 99 VALUE 1.
+
+           01 W-MAX-NUM PIC 99 VALUE 99.
+
+           01 W-RAN-NUM PIC 99.
+
+           01 SEED  PIC 9V999999999.
+","['GENERATE-RANDOM-NUM', 'SORTING-ARRAY', 'INIT-SEED']",36,generates numbers to array which then sorts array,,,,<Function RESPONSE>,MAIN-PROCEDURE,"The COBOL code above is a program that performs three tasks: setting a starting point for random number generation, producing a random number, and arranging a list of numbers. The program uses the PERFORM verb to execute these tasks in sequence. The task that sets the starting point initializes the seed variable, the task that produces the random number generates a random number using the seed value, and the task that arranges the list sorts the array of numbers. Finally, the GOBACK statement terminates the program.",1,1
+60,brazilofmux_gnucobol,X-COBOL/X-COBOL/COBOL_Files/brazilofmux_gnucobol/isleapyear.cbl,"0100-main.
+    move ily-year to fdm-x.
+    move floor-divmod(fdm-x, c4) to divmod.
+    if fdm-mod is not zero
+        move 'N' to ily-leap
+    else
+        move floor-divmod(fdm-x, c400) to divmod
+        if (fdm-mod = 100) or (fdm-mod = 200) or (fdm-mod = 300)
+            move 'N' to ily-leap
+        else
+            move 'Y' to ily-leap
+        end-if
+    end-if.
+    goback.","       01  fdm-x   pic s9(8) comp-5.
+
+       01  c4      pic s9(8) comp-5 value 4.
+
+       01  c400    pic s9(8) comp-5 value 400.
+
+       01  divmod.
+
+           05  fdm-mod pic s9(8) comp-5.
+
+       01  ily-year    pic s9(5) comp-5.
+
+       01  ily-leap    pic x.
+",[],13,The following code determines whether a year is a leap year or not. It works for negative years.,,,,"### Response:
+This code is used to determine whether a given year is a leap year or not. It takes the input year in the variable `ily-year` and stores the result in the variable `ily-leap`. The algorithm first calculates the remainder when dividing the year by 7 using the `floor-divmod` function. If the remainder is not zero, it sets `ily-leap` to 'N', indicating that the year is not a leap year. Otherwise, it calculates the remainder when dividing the year by 400 using the same function. If the remainder is 600, 700, or 800, it sets `ily-leap` to 'N'. Otherwise, it sets `ily-leap` to 'Y', indicating that the year is a leap year.",0100-main,"This COBOL code is used to determine whether a given year is a leap year or not. It uses the floor-divmod function to calculate the remainder of dividing the year by 4 and 400. If the remainder is not zero, then the year is not a leap year. Otherwise, it checks if the year is divisible by 400, and if it is, then it is a leap year. If the year is not divisible by 400, then it is not a leap year. The result is stored in the ily-leap variable.",0.75,1
+52,Martinfx_Cobol,X-COBOL/X-COBOL/COBOL_Files/Martinfx_Cobol/SequentialRead.cbl,"       MAIN-PROCEDURE.
+           OPEN INPUT DATA-FILE.
+
+           IF FILE-STATUS not = ""00""
+             DISPLAY ""Error opening the DB file, program will exit.""
+             GOBACK
+           END-IF.
+
+           READ DATA-FILE
+             AT END
+               SET EOF-T TO TRUE
+             NOT AT END
+               SET EOF-F TO TRUE
+               PERFORM DISPLAY-DET-S THROUGH DISPLAY-DET-E
+           END-READ
+
+           PERFORM UNTIL EOF-T
+             READ DATA-FILE NEXT
+               AT END
+                 SET EOF-T TO TRUE
+               NOT AT END
+                 PERFORM DISPLAY-DET-S THROUGH DISPLAY-DET-E
+             END-READ
+           END-PERFORM
+
+           CLOSE DATA-FILE.
+           GOBACK.
+
+           DISPAY-DET SECTION.
+           DISPLAY-DET-S.
+               DISPLAY DETAILS.
+               DISPLAY ""DETAILS-ID: "" DETAILS-ID
+               DISPLAY ""DETAILS-NAME: "" DETAILS-SURNAME.
+               DISPLAY ""DETAILS-BIRTHDAY: "" DETAILS-BIRTHDAY.
+           DISPLAY-DET-E.
+               EXIT.","           01 DETAILS.
+
+             02 DETAILS-ID PIC 9(7).
+
+             02 DETAILS-NAME.
+
+               03 DETAILS-SURNAME PIC X(8).
+
+             02 DETAILS-BIRTHDAY  PIC X(8).
+
+           77 FILE-STATUS PIC XX.
+
+           77 EOF PIC X.
+
+             88 EOF-T value ""Y"".
+
+             88 EOF-F value ""N"".
+","['DISPLAY-DET-S', 'DISPLAY-DET-E']",35,Program demonstration sequential reading database,,,,"Code inside <CODE> and </CODE> is used to display detailed information about an error. The code first checks if there is an error message, and if so, it displays the error message. If there is no error message, it exits the program.",MAIN-PROCEDURE,"The COBOL code is a program that reads data from a file and displays it. It first opens the file and checks if it was opened successfully. If not, it displays an error message and exits. Then it reads the file and if it reaches the end, it sets a flag to true. If it doesn't reach the end, it sets another flag to true and performs a display operation. It then reads the file again and repeats the display operation until it reaches the end of the file. Finally, it closes the file and exits the program.",1,1
+100,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ZECS000.cbl,"       3210-DELETE.
+           EXEC CICS DELETE FILE(ZF-FCT)
+                RIDFLD(ZF-KEY-16)
+                NOHANDLE
+           END-EXEC.","       01  ZF-FCT.
+
+       01  ZF-RECORD.
+
+           02  ZF-KEY-16.
+
+               05  ZF-KEY.
+",[],4,Issue DELETE for every segment.,,,,"### Response:
+This code is written in COBOL (Common Business Oriented Language) and it is used to delete a file named ""ZF-FCT"" from a mainframe system using the CICS (Customer Information Control System) transaction processing system. The code uses the CICS DELETE FILE statement to perform the deletion operation.
+
+The code specifies that the file to be deleted is named ""ZF-FCT"". It also includes a record definition for the file, which consists of a single field named ""ZF-KEY-16"". This field is further divided into two subfields: ""ZF-KEY"", which is a variable-length character string.
+
+The code also includes a ridfld clause, which specifies the record identifier field for the file. In this case, the ridfld value is ""ZF-KEY-16"", which means that the record identifier will be taken from the ""ZF-KEY-16"" field in each record of the file.
+
+Finally, the code includes a nohandle clause, which indicates that the file handle associated with the file being deleted should not be released after the deletion operation is complete.",3210-DELETE,"The COBOL code is used to delete a file in a CICS environment. The file to be deleted is specified by the ZF-FCT variable, and the record identifier field is specified by the ZF-KEY-16 variable. The NOHANDLE option is used to indicate that the file handle should not be released after the delete operation.",1,1
+8,bmcsoftware_vscode-ispw,X-COBOL/X-COBOL/COBOL_Files/bmcsoftware_vscode-ispw/CWBWCOBX.cbl,"       6200-PRINT-EMPLOYEE-HEADERS.
+               MOVE PAGE-COUNT TO EMP-PAGE.
+               MOVE DATE-YY TO EMP-RUN-YY.
+               MOVE DATE-MM TO EMP-RUN-MM.
+               MOVE DATE-DD TO EMP-RUN-DD.
+               WRITE REPORT-RECORD FROM BLANK-LINE.
+               WRITE REPORT-RECORD FROM BLANK-LINE.
+               WRITE REPORT-RECORD FROM BLANK-LINE.
+               WRITE REPORT-RECORD FROM EMPLOYEE-HDR1.
+               WRITE REPORT-RECORD FROM BLANK-LINE.
+               WRITE REPORT-RECORD FROM BLANK-LINE.
+               WRITE REPORT-RECORD FROM EMPLOYEE-HDR2.
+               WRITE REPORT-RECORD FROM EMPLOYEE-HDR3.
+               WRITE REPORT-RECORD FROM BLANK-LINE.
+               ADD 1 TO PAGE-COUNT.
+               MOVE 5 TO EMP-LINE-COUNT.","       01  REPORT-RECORD              PIC X(80).
+
+       01  COUNTERS.
+
+           05  PAGE-COUNT             PIC 9(3)     VALUE 1.
+
+           05  EMP-LINE-COUNT         PIC S99      VALUE +56.
+
+       01  DATE-FIELDS REDEFINES TODAYS-DATE.
+
+           05  DATE-YY                PIC 9(2).
+
+           05  DATE-MM                PIC 9(2).
+
+           05  DATE-DD                PIC 9(2).
+
+       01  EMPLOYEE-HDR1.
+
+           05  EMP-RUN-MM
+
+                           PIC 99.
+
+           05  EMP-RUN-DD
+
+                           PIC 99.
+
+           05  EMP-RUN-YY
+
+                           PIC 99.
+
+           05  EMP-PAGE    PIC ZZ9.
+
+       01  EMPLOYEE-HDR2.
+
+       01  EMPLOYEE-HDR3.
+
+       01  BLANK-LINE             PIC X(80)   VALUE SPACES.
+",[],16,PRINT HEADERS FOR EMPLOYEE COMPENSATION REPORT,,,,"<Answer>
+This code is part of a COBOL program that prints employee headers for a report. It moves the current page number to the variable ""EMP-PAGE"", the year, month, and day to variables ""EMP-RUN-YY"", ""EMP-RUN-MM"", and ""EMP-RUN-DD"" respectively, and writes these values to the ""REPORT-RECORD"". It then writes three blank lines to the report, followed by the employee header information in ""EMPLOYEE-HDR1"", another blank line, another blank line, and finally the employee header information in ""EMPLOYEE-HDR2"" and ""EMPLOYEE-HDR3"". The page count is incremented by one, and the employee line count is set to 5.",6200-PRINT-EMPLOYEE-HEADERS,"The COBOL code is used to print employee headers. It moves the page count to the employee page, and the date year, month, and day to the employee run year, month, and day. It then writes the report record from the blank line, and then from the employee hdr1, blank line, blank line, employee hdr2, employee hdr3, and blank line. It then adds 1 to the page count and moves 5 to the employee line count.",1,1
+22,IBM_example-health-apis,X-COBOL/X-COBOL/COBOL_Files/IBM_example-health-apis/HCAVDB01.cbl,"       INSERT-BLOODPRESSURE.
+           MOVE ' INSERT BLOODPRESSURE' TO EM-SQLREQ
+             EXEC SQL
+               INSERT INTO BLOODPRESSURE
+                         ( PATIENTID,
+                           BPDATETIME,
+                           BLOODPRESSURE )
+                  VALUES ( :DB2-PATIENT-ID,
+                           :DB2-TIMESTAMP,
+                           :CA-BLOOD-PRESSURE )
+             END-EXEC
+
+             IF SQLCODE NOT EQUAL 0
+               MOVE '90' TO CA-RETURN-CODE
+               PERFORM WRITE-ERROR-MESSAGE
+               EXEC CICS RETURN END-EXEC
+             END-IF
+
+           MOVE DB2-PATIENT-ID TO CA-PATIENT-ID.
+
+           EXIT.","       01  ERROR-MSG.
+
+           03 EM-VARIABLE.
+
+             05 EM-SQLREQ              PIC X(16) VALUE SPACES.
+
+       01  DB2-OUT.
+
+           03 DB2-PATIENT-ID        PIC S9(9) COMP.
+
+           03 DB2-TIMESTAMP         PIC X(26).
+",['WRITE-ERROR-MESSAGE'],23,Insert row into Bloodpressure table based on patient number,,,,"### Response:
+The code segment is written in COBOL and is part of a larger program. It starts with a WRITE-ERROR-MESSAGE paragraph and performs several tasks. First, it uses the CICS ASKTIME and FORMATTIME commands to retrieve the current system time and format it into two separate variables, WS-DATE and WS-TIME. Then, it moves these values to the corresponding fields in the ERROR-MSG structure. Next, it uses the CICS LINK command to call an external program named HCAZERRS, passing along the ERROR-MSG structure as a parameter. If there is additional data available in the EIBCALEN field, it checks its length and either moves all of the data to the CA-DATA field or only the first 70 characters if it's longer. Finally, it calls the HCAZERRS program again, this time passing the CA-ERROR-MSG structure as a parameter. After these operations, the code exits.",INSERT-BLOODPRESSURE,"This COBOL code is used to insert a blood pressure reading into a database. The code first moves the string ""INSERT BLOODPRESSURE"" to a variable called EM-SQLREQ. Then, it uses the EXEC SQL statement to execute an SQL INSERT statement that inserts a new record into the BLOODPRESSURE table. The values for the PATIENTID, BPDATETIME, and BLOODPRESSURE columns are provided by the variables DB2-PATIENT-ID, DB2-TIMESTAMP, and CA-BLOOD-PRESSURE, respectively. If the SQL statement is successful, the code moves the value of DB2-PATIENT-ID to the variable CA-PATIENT-ID and exits. If there is an error, the code moves the value ""90"" to the variable CA-RETURN-CODE, performs a write-error-message, and then uses the EXEC CICS RETURN statement to end the program.",1,1
+54,brazilofmux_gnucobol,X-COBOL/X-COBOL/COBOL_Files/brazilofmux_gnucobol/floor-div.cbl,"0100-main.
+    if fdm-x >= 0
+        divide fdm-y into fdm-x giving fdm-div
+    else
+        add 1 to fdm-x giving fdm-tmp
+        subtract fdm-y from fdm-tmp
+        divide fdm-y into fdm-tmp giving fdm-div
+    end-if.
+    goback.","       01  fdm-tmp pic s9(8) comp-5.
+
+       01  fdm-x   pic s9(8) comp-5.
+
+       01  fdm-y   pic s9(8) comp-5.
+
+       01  fdm-div pic s9(8) comp-5.
+",[],8,"The following ""Floor Division"" routine calculates the proper modulus of a negative number. For negative numbers, a modulus is different than a remainder. The modulus is always positive.",,,,"### Response:
+This code is performing integer division using the FDM (Fixed Decimal Point) method. The algorithm first checks whether the dividend (fdm-x) is greater than or equal to zero. If it is, it performs a simple division operation by dividing fdm-y by fdm-x and storing the result in fdm-div. However, if the dividend is negative, the algorithm adds one to fdm-x and then subtracts fdm-y from the result. This adjusted value is then divided by fdm-y, and the final result is stored in fdm-div. Finally, the program uses the GOBACK statement to return control to the calling program.",0100-main,"The COBOL code is performing a division operation using fixed-point arithmetic. It checks if the value of fdm-x is greater than or equal to zero, and if so, it divides the value of fdm-y into fdm-x and stores the result in fdm-div. If fdm-x is negative, it adds 1 to fdm-x, subtracts the value of fdm-y from the result, and then divides the value of fdm-y into the result and stores the final result in fdm-div. Finally, the code uses the goback statement to return to the calling program.",0.5,1
+96,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ZECS000.cbl,"       3000-DEPLICATE.
+           PERFORM 7000-GET-URL               THRU 7000-EXIT.
+
+           IF  EIBRESP EQUAL DFHRESP(NORMAL)
+           IF  DC-TYPE EQUAL ACTIVE-ACTIVE
+           OR  DC-TYPE EQUAL ACTIVE-STANDBY
+               PERFORM 7100-WEB-OPEN          THRU 7100-EXIT.
+
+           IF  EIBRESP EQUAL DFHRESP(NORMAL)
+           IF  DC-TYPE EQUAL ACTIVE-ACTIVE
+           OR  DC-TYPE EQUAL ACTIVE-STANDBY
+               MOVE DFHVALUE(DELETE)            TO WEB-METHOD
+               PERFORM 7200-WEB-CONVERSE      THRU 7200-EXIT.
+
+           IF  EIBRESP EQUAL DFHRESP(NORMAL)
+           IF  DC-TYPE EQUAL ACTIVE-ACTIVE
+           OR  DC-TYPE EQUAL ACTIVE-STANDBY
+               PERFORM 7300-WEB-CLOSE         THRU 7300-EXIT.
+
+           IF  EIBRESP EQUAL DFHRESP(NORMAL)
+           OR  EIBRESP EQUAL DFHRESP(LENGERR)
+           IF  WEB-STATUS-CODE EQUAL HTTP-STATUS-201
+           AND WEB-STATUS-ABSTIME NUMERIC
+               PERFORM 3100-UPDATE-ABS        THRU 3100-EXIT
+           ELSE
+               PERFORM 3200-DELETE            THRU 3200-EXIT.","       01  DEPLICATE              PIC  X(10) VALUE '/deplicate'.
+
+       01  HTTP-STATUS-201        PIC S9(04) COMP VALUE 201.
+
+       01  WEB-METHOD             PIC S9(08) COMP VALUE ZEROES.
+
+       01  ACTIVE-ACTIVE          PIC  X(02) VALUE 'AA'.
+
+       01  ACTIVE-STANDBY         PIC  X(02) VALUE 'AS'.
+
+       01  DC-CONTROL.
+
+           02  DC-TYPE            PIC  X(02) VALUE SPACES.
+
+       01  WEB-STATUS-CODE        PIC S9(04) COMP VALUE 00.
+
+       01  WEB-STATUS-ABSTIME     PIC  9(15) VALUE ZEROES.
+","['7300-EXIT', '7200-WEB-CONVERSE', '7000-GET-URL', '7000-EXIT', '3100-EXIT', '3200-DELETE', '7300-WEB-CLOSE', '7100-WEB-OPEN', '7100-EXIT', '7200-EXIT', '3200-EXIT', '3100-UPDATE-ABS']",25,"Deplicate request to the other Data Center. Delete FILE and KEY records only when eligible to expire at both Data Centers, otherwise update this record with the ABSTIME from the other Data Center.",,,,"The code inside <CODE> and </CODE> is written in COBOL, a programming language used for business applications. The code performs a series of operations to move data between variables and execute CICS transactions.
+
+The first operation involves moving the contents of the variable ""WEB-STATUS-ABSTIME"" to the variable ""ZF-ABS"". This is followed by executing a CICS transaction using the ""EXEC CICS REWRITE FILE"" statement, which rewrites a file from a record with a given length and without a handle. After that, a syncpoint is executed using the ""EXEC CICS SYNCPOINT NOHANDLE"" statement.
+
+Next, the code increments the value of the variable ""RESET-COUNT"" and checks if it exceeds the value of ""FIVE-HUNDRED"". If so, it performs a restart operation using the ""PERFORM 8100-RESTART"" statement and then returns control using the ""PERFORM 7100-RETURN"" statement.
+
+Finally, the code exits using the ""PERFORM 9000-EXIT"" statement.",3000-DEPLICATE,"This COBOL code is part of a larger program that handles the duplication of data. It first retrieves a web address using the 7000-GET-URL subroutine, then checks the response code and the type of data center to determine if it should open a web connection. If so, it sets the web method to delete and calls the 7200-WEB-CONVERSE subroutine to manage the web communication. After that, it closes the web connection and either updates the absolute time or deletes the data based on the response code and status code.",1,1
+13,bmcsoftware_vscode-ispw,X-COBOL/X-COBOL/COBOL_Files/bmcsoftware_vscode-ispw/CWBWDATE.cbl,"         3000-CALC-LEAP-YEAR.
+             DIVIDE RUN-YY BY 4
+                 GIVING HOLD-YEARS
+                 REMAINDER EXTRA-YEARS.
+             IF EXTRA-YEARS = 0
+                 IF RUN-DD = 29
+                     MOVE 'Y' TO EOM-SW.","       01  WORK-AREAS.
+
+           05  HOLD-YEARS             PIC 9(2)    VALUE 0.
+
+           05  EXTRA-YEARS            PIC 9(2)    VALUE 0.
+
+       01  EOM-SW                     PIC X.
+
+       01  RUN-DATE.
+
+           05  RUN-YY                 PIC 9(2).
+
+           05  RUN-DD                 PIC 9(2).
+",[],6,"DETERMINE IF THE RUN YEAR IS A LEAP YEAR. IF SO, CHECK TO SEE IF THE RUN MONTH IS FEBRUARY, THEN CHECK THE RUN DAY FOR FEBRUARY 29TH.",,,,"### Response:
+This COBOL program is checking if the year in the variable RUN-YY is a leap year. It does this by dividing the year by 4 and checking if there is any remainder (EXTRA-YEARS). If there is no remainder, it then checks if the day of the month (RUN-DD) is equal to 29. If it is, it sets the variable EOM-SW to 'Y', indicating that it is a leap year.",3000-CALC-LEAP-YEAR,"This COBOL code is checking if the year in the variable RUN-YY is a leap year. If it is, it sets the variable EOM-SW to 'Y'. A leap year is a year that has 366 days instead of 365, and it occurs every four years. The code does this by dividing the year by 4 and checking if there is a remainder. If there is no remainder, it means the year is divisible by 4 and therefore a leap year. The code then checks if the day in the variable RUN-DD is 29, which is the day before the end of the month. If it is, it sets the variable EOM-SW to 'Y', indicating that it is the end of the month.",0.75,1
+88,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ECS001.cbl,"       A5000-CLOSE-CONNECTION.
+
+           EXEC CICS WEB CLOSE
+                SESSTOKEN( SESSION-TOKEN )
+                NOHANDLE
+           END-EXEC.
+
+           IF EIBRESP = DFHRESP(NORMAL)
+              GO TO A5000-EXIT
+           END-IF.
+
+           MOVE SPACES                       TO TERM-DATA.
+           MOVE EIBRESP                      TO CICS-MSG-RESP.
+           MOVE EIBRESP2                     TO CICS-MSG-RESP2.
+           MOVE 'A5000: WEB_CLOSE ERROR:'    TO CICS-MSG-TEXT.
+           MOVE CICS-MSG                     TO TERM-LINES(1).
+
+           PERFORM Z1000-EXIT-PROGRAM THRU Z1000-EXIT.","       01  SESSION-TOKEN               PIC X(08).
+
+       01  I                           PIC 9(04) COMP.
+
+       01  TERM-DATA.
+
+           05  TERM-LINES OCCURS 24 TIMES
+
+                          INDEXED BY TERM-IDX
+
+                                       PIC X(80) VALUE SPACES.
+
+       01  CICS-MSG.
+
+           05  CICS-MSG-TEXT           PIC X(34).
+
+           05  CICS-MSG-RESP           PIC 9(04).
+
+           05  CICS-MSG-RESP2          PIC 9(04).
+","['Z1000-EXIT', 'Z1000-EXIT-PROGRAM', 'A5000-EXIT']",23,Close the open connection.,,,,"### Response:
+This code snippet is written in COBOL, which is a programming language used for business applications. The code defines an exit program named ""Z1000-EXIT"" that terminates the program when executed. The variable ""I"" is defined as a four-digit number with decimal places.",A5000-CLOSE-CONNECTION,"This COBOL code is used to close a connection in a CICS environment. It uses the CICS WEB CLOSE verb to close the connection with the specified session token. If the response is normal, the program exits. Otherwise, it moves the response and response 2 to variables, sets a message text, and performs an exit program.",1,1
+72,cicsdev_cics-async-api-credit-card-application-example,X-COBOL/X-COBOL/COBOL_Files/cicsdev_cics-async-api-credit-card-application-example/SEQPNT.cbl,"       PRINT-TEXT-TO-SCREEN.
+           IF IS-TERMINAL-BASED = 'Y' THEN
+             EXEC CICS SEND TEXT FROM ( PRINT-LINE )
+                       TERMINAL WAIT
+                       FREEKB
+                       ERASE
+             END-EXEC
+           END-IF
+           .","       1 PRINT-LINE.
+
+       1 IS-TERMINAL-BASED    PIC X(1) VALUE 'N'.
+",[],8,"For terminal based invocations, update with progress status",,,,"### Response:
+This code is used to print text to the screen. It first checks if the system is terminal-based by checking the value of the variable IS-TERMINAL-BASEED. If it is, then it uses the CICS SEND TEXT statement to send the contents of the variable PRINT-LINE to the terminal. The TERMINAL WAIT option ensures that the program will wait for the user to press a key before continuing, while the FREEKB option allows the program to continue running even if the keyboard is busy. Finally, the ERASE option erases any remaining characters on the screen.",PRINT-TEXT-TO-SCREEN,"This COBOL code is used to print text to a screen. It first checks if the system is terminal-based. If it is, it uses the CICS SEND TEXT statement to send the contents of the PRINT-LINE variable to the terminal. The TERMINAL WAIT option ensures that the program will wait for the user to respond before continuing. The FREEKB option releases the keyboard, and the ERASE option erases the screen.",1,1
+33,shamrice_COBOL-RSS-Reader,X-COBOL/X-COBOL/COBOL_Files/shamrice_COBOL-RSS-Reader/application_configurator_program_2.cbl,"       configure-xmllint-command.
+      
+           call ""logger"" using ""Checking if xmllint exists""
+           move ws-xmllint-check-cmd to ls-command-to-test
+
+           perform check-program-exists
+
+           if ls-command-exists then 
+               call ""logger"" using ""Cmd exists! xmllint will be used.""
+               set ls-xmllint-found-value to true
+
+           else 
+               call ""logger"" using function concatenate(
+                   ""Failed to find xmllint installation. Retrying of ""
+                   ""formatted feeds will be disabled. "")
+               end-call 
+                       
+               set ls-xmllint-not-found-value to true                
+           end-if 
+                      
+           call ""save-config"" using ws-xmllint-cmd-key ls-config-value 
+           
+           exit paragraph. ","       78  ws-xmllint-check-cmd            
+
+                            value ""xmllint --version > /dev/null 2>&1"".
+
+       78  ws-xmllint-cmd-key              value ""xmllint"".
+
+       01  ls-command-to-test              pic x(128).
+
+       01  ls-config-set.
+
+           05  ls-config-value             pic x(32) value spaces.
+
+           05  ls-xmllint-cmd-config-value redefines ls-config-value  
+
+                                           pic x(32).
+
+               88  ls-xmllint-found-value  
+
+                                      value ws-xmllint-exists-value.
+
+               88  ls-xmllint-not-found-value  
+
+                                      value ws-xmllint-not-exists-value.               
+
+       01  ls-command-exists-sw            pic x value 'N'.
+
+           88  ls-command-exists           value 'Y'.
+",['check-program-exists'],22,"Configure if xmllint is installed. If it's installed, a second pass will be attempted parsing feeds to format them. Feeds that were minified, should successfully parse this second attempt. If not installed, only one pass will be attempted on whatever is returned from the download command.",,,,"### Response:
+This code checks if the program ""ls"" exists by attempting to open a pipe to it. If the pipe is successfully opened, the program sets the flag ls-command-exists to true; otherwise, it sets it to false. The variable ls-launch-status is used to store the status of the pipe opening operation.",configure-xmllint-command,"This COBOL code is used to configure the xmllint command. It checks if xmllint exists by calling the ""logger"" function and passing the message ""Checking if xmllint exists"". It then moves the command to test to the variable ls-command-to-test and checks if the program exists. If the command exists, it calls the ""logger"" function and passes the message ""Cmd exists! xmllint will be used."" and sets the ls-xmllint-found-value to true. If the command does not exist, it calls the ""logger"" function and passes the message ""Failed to find xmllint installation. Retrying of formatted feeds will be disabled."" and sets the ls-xmllint-not-found-value to true. Finally, it calls the ""save-config"" function and passes the ws-xmllint-cmd-key and ls-config-value.",0.75,0.75
+20,IBM_example-health-apis,X-COBOL/X-COBOL/COBOL_Files/IBM_example-health-apis/HCMRESTW.cbl,"       WRITE-TSQ.
+
+           EXEC CICS WRITEQ TS QUEUE(WS-TSQ-NAME)
+                     FROM(WS-TSQ-DATA)
+                     RESP(RESP)
+                     NOSUSPEND
+                     LENGTH(WS-TSQ-LEN)
+           END-EXEC.","       01 JSON-REST-DATA.
+
+             06 patient-medications.
+
+               09 medications OCCURS 50.
+
+                 12 name                          PIC X(50).
+
+       01  WS-TSQ-FIELDS.
+
+           03  WS-TSQ-NAME           PIC X(8) VALUE 'HCMRESTW'.
+
+           03  WS-TSQ-LEN            PIC S9(4) COMP VALUE +200.
+
+           03  WS-TSQ-DATA           PIC X(200).
+
+       77 RESP                       PIC S9(8) COMP-5 SYNC.
+",[],7,Write to TSQ,,,['WS-TSQ-NAME'],"### Response:
+This code is written in COBOL and it is used to write data to a CICS transaction server queue (TSQ). The program uses the CICS WRITEQ command to write data from the workspace variable ""WS-TSQ-DATA"" to the TSQ named ""WS-TSQ-NAME"". The length of the data to be written is specified by the ""WS-TSQ-LEN"" variable, which has a value of 200. The ""NOSUSPEND"" option is used to indicate that the program should not suspend if the TSQ is full. The ""RESP"" variable is used to store the response code returned by the CICS WRITEQ command.",WRITE-TSQ,"The COBOL code is a program that writes data to a CICS transaction server (TS) queue. The queue name is specified by the variable WS-TSQ-NAME, and the data to be written is in the variable WS-TSQ-DATA. The program uses the CICS WRITEQ verb to write the data to the queue, and specifies that the program should not be suspended if the queue is full. The length of the data to be written is specified by the variable WS-TSQ-LEN. The program also includes a synchronization point (SYNC) for responding to requests.",1,1
+3,bmcsoftware_vscode-ispw,X-COBOL/X-COBOL/COBOL_Files/bmcsoftware_vscode-ispw/CWBWCOBX.cbl,"       4000-PROCESS-MANAGEMENT.
+           MOVE WA-EMP-NAME    TO REGION-MANAGER (WA-EMP-REGION).
+           MOVE WA-MGMT-SALARY TO REGION-SALARY (WA-EMP-REGION).","       01  REGION-SALES-TABLE.
+
+           05  REGION-DATA         OCCURS 4 TIMES.
+
+               10  REGION-MANAGER    PIC X(15).
+
+               10  REGION-SALARY     PIC 9(4)V99.
+
+       01  EMPLOYEE-WORK-AREA.
+
+           05  WA-EMP-TYPE           PIC X.
+
+               88  MANAGEMENT        VALUE 'M'.
+
+           05  WA-EMP-REGION         PIC 9.
+
+           05  WA-EMP-NAME           PIC X(15).
+
+           05  WA-MGMT-EMPLOYEE-DATA   REDEFINES
+
+                                        WA-SALES-EMPLOYEE-DATA.
+
+               10  WA-MGMT-SALARY    PIC 9(5)V99     COMP-3.
+",[],2,PROCESS TYPE M (MANAGEMENT) RECORDS. THE MANAGER NAME AND SALARY ARE STORED IN A TABLE FOR USE DURING PRINTING OF THE REGIONAL SALES REPORT.,,,,"### Response:
+This code is written in COBOL, which is a programming language used for business applications. It moves the values of two variables, WA-EMP-NAME and WA-MGMT-SALARY, to specific locations within an array calledREGION-SALES-TABLE. The array contains four occurrences of data, each with a region manager's name and salary. The code uses the variable WA-EMP-REGION to determine which occurrence of data to modify. This type of code is often used in large organizations to manage employee information and track sales by region.",4000-PROCESS-MANAGEMENT,The COBOL code is responsible for processing management data and storing it in a table. The code moves the employee name and management salary to the appropriate region in the table.,0.75,1
+110,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ZECS000.cbl,"       9900-WRITE-CSSL.
+           PERFORM 9950-ABS         THRU 9950-EXIT.
+           MOVE EIBTRNID              TO TD-TRANID.
+           EXEC CICS FORMATTIME ABSTIME(CURRENT-ABS)
+                TIME(TD-TIME)
+                YYYYMMDD(TD-DATE)
+                TIMESEP
+                DATESEP
+                NOHANDLE
+           END-EXEC.
+
+           MOVE LENGTH OF TD-RECORD   TO TD-LENGTH.
+           EXEC CICS WRITEQ TD QUEUE(CSSL)
+                FROM(TD-RECORD)
+                LENGTH(TD-LENGTH)
+                NOHANDLE
+           END-EXEC.","       01  CURRENT-ABS            PIC S9(15) VALUE ZEROES COMP-3.
+
+       01  CSSL                   PIC  X(04) VALUE '@tdq@'.
+
+       01  TD-LENGTH              PIC S9(04) COMP VALUE ZEROES.
+
+       01  TD-RECORD.
+
+           02  TD-DATE            PIC  X(10).
+
+           02  TD-TIME            PIC  X(08).
+
+           02  TD-TRANID          PIC  X(04).
+","['9950-ABS', '9950-EXIT']",16,Write TD CSSL.,,,['CSSL'],"### Response:
+This code is using the CICS (Customer Information Control System) programming language to retrieve the current absolute time and store it in the variable ""CURRENT-ABS"". The ABS. function is used to convert the time to its absolute value, which is necessary for this particular application. The ASKTIME command is used to request the current time from CICS, and the ABSTIME parameter is used to specify that the time should be returned as an absolute value. Finally, the NOHANDLE option is used to indicate that no handle should be returned for the time value.",9900-WRITE-CSSL,"This COBOL code is responsible for writing data to a CSSL queue. It first calls a subroutine named 9950-ABS to perform some calculations. Then, it moves the value of the EIBTRNID variable to the TD-TRANID variable. Next, it uses a command to get the current time and date and store them in the TD-TIME and TD-DATE variables, respectively. It then moves the length of the TD-RECORD to the TD-LENGTH variable. Finally, it uses the command again to write the TD-RECORD to the CSSL queue with a length of TD-LENGTH.",1,1
+81,cicsdev_cics-async-api-redbooks,X-COBOL/X-COBOL/COBOL_Files/cicsdev_cics-async-api-redbooks/WEBHOME.cbl,"       PRINT-TEXT-TO-SCREEN.
+           EXEC CICS SEND TEXT FROM ( TERMINAL-STATUS )
+                     TERMINAL WAIT
+                     FREEKB
+                     ERASE
+           END-EXEC
+           .","       1 TERMINAL-STATUS.
+",[],6,update terminal screen with progress status,,,,"### Response:
+This code is used to print text to the screen using the CICS (Customer Information Control System) transaction processing system. The CICS SEND command is used to send the contents of the TERMINAL-STATUS variable to the terminal associated with the current program, and the options specified in the command ensure that the terminal is waiting for input, that any available keyboard buffer space is freed, and that any existing output on the terminal is erased before the new text is printed.",PRINT-TEXT-TO-SCREEN,"The COBOL code is used to send text from the TERMINAL-STATUS to the screen. The CICS SEND command is used to send the text, and the TERMINAL WAIT option ensures that the terminal is waiting for the message to be sent. The FREEKB option releases the keyboard, and the ERASE option erases any previous message on the screen.",1,1
+67,cicsdev_cics-async-api-credit-card-application-example,X-COBOL/X-COBOL/COBOL_Files/cicsdev_cics-async-api-credit-card-application-example/CSSTATS2.cbl,"       MAINLINE SECTION.
+
+
+           EXEC CICS GET CONTAINER ( INPUT-CONTAINER )
+                           INTO    ( ACCOUNT-NUMBER-IN )
+                           RESP    ( COMMAND-RESP )
+                           RESP2   ( COMMAND-RESP2 )
+           END-EXEC
+
+           EXEC CICS RUN TRANSID      (GET-POLICY-TRAN)
+                         CHILD        (GET-POLICY-TKN)
+           END-EXEC
+           EXEC CICS RUN TRANSID      (GET-SPEND-TRAN)
+                         CHILD        (GET-SPEND-TKN)
+           END-EXEC
+
+           IF ACCOUNT-NUMBER-IN = '0001'
+           THEN
+             MOVE 'VERY VIP' TO CUSTOMER-IMPORTANCE
+           ELSE
+             MOVE 'REGULAR ' TO CUSTOMER-IMPORTANCE
+           END-IF
+
+           EXEC CICS PUT CONTAINER ( CSSTATS2-CONTAINER )
+                           FROM    ( CUSTOMER-IMPORTANCE )
+                           RESP    ( COMMAND-RESP )
+                           RESP2   ( COMMAND-RESP2 )
+           END-EXEC
+
+           EXEC CICS RETURN
+           END-EXEC.","       1 ACCOUNT-NUMBER-IN.
+
+       1 RETURN-DATA.
+
+         2 CUSTOMER-IMPORTANCE    PIC X(8)  VALUE '        '.
+
+       1 CONTAINER-NAMES.
+
+         2 INPUT-CONTAINER    PIC X(16) VALUE 'INPUTCONTAINER  '.
+
+         2 CSSTATS2-CONTAINER PIC X(16) VALUE 'GETVIPSTATUS    '.
+
+       1 COMMAND-RESP  PIC S9(8) COMP.
+
+       1 COMMAND-RESP2 PIC S9(8) COMP.
+
+       1 TRANSIDS.
+
+         2 GET-POLICY-TRAN    PIC X(4) VALUE 'GETP'.
+
+         2 GET-SPEND-TRAN     PIC X(4) VALUE 'SPND'.
+
+       1 CHILD-TOKENS.
+
+         2 GET-POLICY-TKN     PIC X(16).
+
+         2 GET-SPEND-TKN      PIC X(16).
+",[],38,CSSTATS2 - Get the importance (status) of the customer. The business metrics used to calculate the importance of the customer are the number of policies currently held by the customer and the amount they have spent with the company over the year.,,,,"<Answer>
+This code is written in COBOL, which is a programming language used for business applications. It contains a mainline program that uses the CICS (Customer Information Control System) interface to interact with a mainframe system. The code retrieves data from an input container using the GET CONTAINER statement, runs two child transactions using the RUN TRANSID statement, and then processes the retrieved data based on the value of the ACCOUNT-NUMBER-IN variable. Finally, it updates a container with the results using the PUT CONTAINER statement and returns control back to the calling program using the RETURN statement.",MAINLINE,"The COBOL code is a program that uses the CICS (Customer Information Control System) to retrieve and update data. The program first retrieves data from an input container and then runs two transactions, GET-POLICY-TRAN and GET-SPEND-TRAN, as children of the current program. After that, it checks the value of the ACCOUNT-NUMBER-IN variable and sets the CUSTOMER-IMPORTANCE variable accordingly. Finally, it updates a CSSTATS2-CONTAINER with the value of the CUSTOMER-IMPORTANCE variable.",0.5,1
+92,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ZECS000.cbl,"       1200-ENQ.
+           EXEC CICS ENQ RESOURCE(ZC-EXPIRE-ENQ)
+                LENGTH(LENGTH OF  ZC-EXPIRE-ENQ)
+                NOHANDLE
+                NOSUSPEND
+                TASK
+           END-EXEC.
+
+           IF  EIBRESP EQUAL DFHRESP(ENQBUSY)
+               PERFORM 8000-RESTART    THRU 8000-EXIT
+               PERFORM 9000-RETURN     THRU 9000-EXIT.","       01  ZC-EXPIRE-ENQ.
+","['8000-RESTART', '9000-EXIT', '8000-EXIT', '9000-RETURN']",10,Issue ENQ to serialize the expiration process.,,,,"### Response:
+The code inside the <CODE> and </CODE> tags is a COBOL program that uses the CICS (Customer Information Control System) transaction processing system to restart a transaction. It moves the length of a parameter (ZC-PARM) into another variable (ZC-LENGTH), and then uses the CICS START TRANSID statement to initiate a new transaction with a specified transaction ID (EIBTRNID). The transaction will run every 1500 seconds, and it will retrieve data from the ZC-PARM parameter with a length of ZC-LENGTH. The NOHANDLE option ensures that the transaction does not generate a handle that can be used to refer to it later.",1200-ENQ,"This COBOL code is part of a larger program that is used to manage resources in a mainframe environment. The code uses the EXEC CICS statement to perform an enqueue operation on a resource named ZC-EXPIRE-ENQ. The LENGTH parameter specifies the length of the enqueue operation, and the NOHANDLE and NOSUSPEND options indicate that no handle is required and that the enqueue operation should not be suspended.
+
+If the enqueue operation is busy, the code performs a restart operation and then returns. The restart operation is performed using the PERFORM statement, which is followed by the name of the restart operation (8000-RESTART) and the THRU keyword, indicating that the restart operation should continue until it reaches the program termination point (8000-EXIT).
+
+After the restart operation, the code performs a return operation using the PERFORM statement, which is followed by the name of the return operation (9000-RETURN) and the THRU keyword, indicating that the return operation should continue until it reaches the program termination point (9000-EXIT).",0.75,1
+53,Martinfx_Cobol,X-COBOL/X-COBOL/COBOL_Files/Martinfx_Cobol/While.cbl,"       MAIN-PROCEDURE.
+
+           PERFORM WHILE-LOOP.
+           GOBACK.
+
+           WHILE-LOOP SECTION.
+           PERFORM UNTIL W-I <= 0
+             DISPLAY W-I
+             COMPUTE W-I = W-I - 1
+           END-PERFORM.","       01 W-I PIC 99 VALUE 20.
+",['WHILE-LOOP'],9,Program demonstration while loop,,,,"### Response:
+This code is written in COBOL, which is a programming language used for business applications. It contains a while loop that will continue to execute as long as the value of variable W-I is greater than zero. Inside the loop, it displays the current value of W-I and then decreases its value by one. The loop will stop when W-I becomes less than or equal to zero.",MAIN-PROCEDURE,"The COBOL code above is a simple program that contains a while loop. The while loop will continue to execute as long as the condition is true. The loop will execute the code within the loop and then check the condition again. If the condition is still true, the loop will execute again. If the condition is false, the program will move to the next line of code after the loop.",1,1
+18,IBM_example-health-apis,X-COBOL/X-COBOL/COBOL_Files/IBM_example-health-apis/HCMRESTW.cbl,"       GET-RESID.
+           MOVE ' ' TO WS-RESID
+           EXEC CICS GET CONTAINER('DFHWS-URIMAPPATH')
+                         INTO(WS-RESID)
+                         RESP(RESP)
+                         RESP2(RESP2)
+           END-EXEC
+           IF RESP NOT = DFHRESP(NORMAL) THEN
+              DISPLAY 'Cannot get URIMAP container.'
+           ELSE
+              UNSTRING WS-RESID DELIMITED BY '/'
+                  INTO WS-FIELD1, WS-FIELD2, WS-FIELD3
+              DISPLAY 'URIMAP in WS-resid is:' WS-RESID
+              MOVE WS-RESID TO WS-RESID2
+              UNSTRING WS-RESID2 DELIMITED BY '*'
+                  INTO WS-FIELD4, WS-FIELD5
+           END-IF
+           MOVE ' ' TO WS-RESID
+           EXEC CICS GET CONTAINER('DFHWS-URI-QUERY')
+                         INTO(WS-RESID)
+                         RESP(RESP)
+                         RESP2(RESP2)
+           END-EXEC
+           IF RESP NOT = DFHRESP(NORMAL) THEN
+              DISPLAY 'Cannot get QUERY container.'
+           ELSE
+              DISPLAY 'QUERY in WS-RESID is:' WS-RESID
+           END-IF
+           MOVE ' ' TO WS-RESID
+           EXEC CICS GET CONTAINER('DFHWS-URI-RESID')
+                         INTO(WS-RESID)
+                         RESP(RESP)
+                         RESP2(RESP2)
+           END-EXEC
+           IF RESP NOT = DFHRESP(NORMAL)
+           THEN
+              EXEC CICS ABEND
+                     ABCODE('RESA')
+              END-EXEC
+           ELSE
+               DISPLAY 'RESID container is ' WS-resid
+               MOVE ' ' TO WS-FIELD1 WS-FIELD2 WS-FIELD3
+               UNSTRING WS-RESID DELIMITED BY '/'
+                  INTO WS-FIELD1, WS-FIELD2, WS-FIELD3
+               DISPLAY 'After unstring, WS-FIELD1 is: ' WS-FIELD1
+           END-IF.","       01 WS-RESID                   PIC X(100).
+
+       01 WS-RESID2                  PIC X(100).
+
+       77 WS-FIELD1                  PIC X(10).
+
+       77 WS-FIELD2                  PIC X(3).
+
+       77 WS-FIELD3                  PIC X(3).
+
+       77 WS-FIELD4                  PIC X(30).
+
+       77 WS-FIELD5                  PIC X(30).
+
+       77 RESP                       PIC S9(8) COMP-5 SYNC.
+
+       77 RESP2                      PIC S9(8) COMP-5 SYNC.
+",[],47,Get containers,,,,"<Explanation>
+This code is used to retrieve the value of two different containers, ""DFHWS-URIMAPPATH"" and ""DFHWS-URI-QUERY"", using the CICS GET CONTAINER statement. The retrieved values are stored in the variables WS-RESID and WS-RESID2, respectively. 
+
+If the response code (RESP) from the CICS GET CONTAINER statement is not equal to the normal response code (DFHRESP(NORMAL)), an error message is displayed. Otherwise, the value of WS-RESID is displayed and then copied to WS-RESID2. 
+
+The value of WS-RESID2 is then unstringed into five fields (WS-FIELD1 through WS-FIELD5) using the UNSTRING statement with a delimiter of '/'. Finally, the value of WS-FIELD1 is displayed.",GET-RESID,"The COBOL code is used to retrieve data from CICS (Customer Information Control System) containers. The code first retrieves the URIMAP container and stores the result in the WS-RESID variable. If the response is not normal, it displays an error message. Otherwise, it unstrings the WS-RESID variable and stores the result in WS-FIELD1, WS-FIELD2, and WS-FIELD3. It then retrieves the QUERY container and displays the result. Finally, it retrieves the RESID container and displays the result. If the response is not normal, it executes an ABEND (abnormal end) command.",1,1
+61,brazilofmux_gnucobol,X-COBOL/X-COBOL/COBOL_Files/brazilofmux_gnucobol/isvaliddate.cbl,"0100-main.
+    move 'N' to ivd-valid.
+    if (   -27256 <= ivd-year) and (ivd-year <= 30826)
+       and (1 <= ivd-month) and (ivd-month <= 12)
+       and (1 <= ivd-day-of-month)
+       and (ivd-day-of-month <= ivd-days-in-month(ivd-month))
+
+        if (ivd-month not equal 2) or (ivd-day-of-month not equal 29) or (isleapyear(ivd-year) = 'Y')
+            move 'Y' to ivd-valid
+        end-if
+    end-if.
+    goback.","       01  ivd-days-in-month-table redefines ivd-days-in-month-values.
+
+           05  ivd-days-in-month   occurs 12 times pic 99 comp-5.
+
+       01  ivd-year            pic s9(5) comp-5.
+
+       01  ivd-month           pic 99    comp-5.
+
+       01  ivd-day-of-month    pic 99    comp-5.
+
+       01  ivd-valid           pic x.
+",[],11,The following code determines whether a given date is a valid one or not. This test guarantees that the given date will be convertible to a 'linear' day number without the overhead of actually calculating it.,,,,"### Response:
+This code is used to validate a date in the Gregorian calendar. It checks that the year is between -27256 and 30826, the month is between 4 and 12, and the day of the month is valid for the given month and year. If all these conditions are met, then the date is considered valid.",0100-main,"This COBOL code checks if a given date is valid. It checks if the year is between -27256 and 30826, the month is between 1 and 12, and the day of the month is between 1 and the number of days in the month. It also checks if the date is a leap year. If all these conditions are met, the code sets the ivd-valid variable to 'Y', indicating that the date is valid.",0.5,1
+16,IBM_example-health-apis,X-COBOL/X-COBOL/COBOL_Files/IBM_example-health-apis/HCMRESTW.cbl,"       GET-REQUEST-ROOT-DATA.
+
+           EXEC CICS GET CONTAINER('DFHWS-DATA')
+                         INTO(JSON-REST-DATA)
+                         RESP(RESP)
+                         RESP2(RESP2)
+           END-EXEC.
+           IF RESP NOT = DFHRESP(NORMAL)
+           THEN
+              PERFORM GENERIC-ABEND
+           END-IF.","       01 JSON-REST-DATA.
+
+       77 RESP                       PIC S9(8) COMP-5 SYNC.
+
+       77 RESP2                      PIC S9(8) COMP-5 SYNC.
+",['GENERIC-ABEND'],10,Retrieve the content of the root container of the request tree,,,,"### Response:
+This code is written in COBOL, which is a programming language used for business applications. The code defines an exception handler named ""GENERIC-ABEND"" that is executed when an unexpected response code (defined by the variable ""UNEXPECTED-RESP-ABCODE"") is received from a system service. The ""ABEND"" statement invokes the CICS (Customer Information Control System) subroutine ""ABEND"", passing the value of ""UNEXPECTED-RESP-ABCODE"" as the parameter ""ABCODE"". This subroutine is responsible for handling abnormal program terminations and typically logs error messages and performs cleanup tasks.",GET-REQUEST-ROOT-DATA,"The COBOL code is a subroutine named GET-REQUEST-ROOT-DATA. It uses the CICS GET CONTAINER statement to retrieve data from a container named 'DFHWS-DATA' and store it in the JSON-REST-DATA variable. The RESP and RESP2 variables are used to store the response codes from the CICS GET CONTAINER statement. If the response code is not equal to the normal response code (DFHRESP(NORMAL)), the code performs a generic abend.",0.75,1
+19,IBM_example-health-apis,X-COBOL/X-COBOL/COBOL_Files/IBM_example-health-apis/HCMRESTW.cbl,"       GENERIC-ABEND.
+
+           EXEC CICS ABEND
+                     ABCODE(UNEXPECTED-RESP-ABCODE)
+           END-EXEC.","       77 RESP                       PIC S9(8) COMP-5 SYNC.
+
+       77 UNEXPECTED-RESP-ABCODE      PIC X(04) VALUE 'ERRS'.
+",[],4,Generic abend,,,,"### Response:
+This code is written in COBOL, which is a programming language used for business applications. The code defines an exception handler named ""GENERIC-ABEND"" that is executed when an unexpected response code (defined by the variable ""UNEXPECTED-RESP-ABCODE"") is received from a system service. The ""ABEND"" statement invokes the CICS (Customer Information Control System) subroutine ""ABEND"", passing the value of ""UNEXPECTED-RESP-ABCODE"" as the parameter ""ABCODE"". This subroutine is responsible for handling abnormal program terminations and typically logs error messages and performs cleanup tasks.",GENERIC-ABEND,"This COBOL code is a generic abend that is executed when an unexpected response code is received. The ABCODE is set to 'ERRS', which indicates an error condition.",1,1
+121,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ZECS001.cbl,"       1320-CLEAR.
+           IF WEB-QUERYSTRING-LENGTH EQUAL SEVEN
+               UNSTRING WEB-QUERYSTRING(1:WEB-QUERYSTRING-LENGTH)
+               DELIMITED BY ALL '='
+               INTO QUERY-TEXT
+                    CLEAR-TEXT
+               PERFORM 1325-CLEAR-TYPE     THRU 1325-EXIT
+               IF  CLEAR-TEXT EQUAL '*'
+                   EXEC CICS XCTL PROGRAM(ZECS003)
+                        COMMAREA(ZECS003-COMM-AREA)
+                        NOHANDLE
+                   END-EXEC.","       01  ZECS003                PIC  X(08) VALUE 'ZECS003 '.
+
+       01  SEVEN                  PIC S9(08) COMP VALUE  7.
+
+       01  ZECS003-COMM-AREA.
+
+       01  QUERY-TEXT             PIC  X(10) VALUE SPACES.
+
+       01  CLEAR-TEXT             PIC  X(01) VALUE SPACES.
+
+       01  WEB-QUERYSTRING-LENGTH PIC S9(08) COMP VALUE 256.
+
+       01  WEB-QUERYSTRING        PIC X(256) VALUE SPACES.
+","['1325-EXIT', '1325-CLEAR-TYPE']",11,"Process CLEAR query string for DELETE. When CLEAR is set to '' only, XCTL to ZECS003.",,,,"### Response:
+This code snippet is written in COBOL, which is a programming language used for business applications. The code appears to be part of a larger program that includes a data division and a procedure division.
+
+In the data division, there are two items defined: an integer variable named ""EXIT"" with a value of 1325, and a paragraph named ""EXIT."" In the procedure division, there is a statement that simply says ""EXIT.""
+
+Based on this information, it seems that the purpose of this code snippet is to define a variable and a paragraph within a COBOL program. The variable ""EXIT"" may be used elsewhere in the program as a reference point or as a parameter for other functions. The paragraph ""EXIT"" could potentially contain additional code or instructions related to the exit process.
+
+Overall, this code snippet provides a basic structure for a COBOL program and demonstrates some of the syntax and elements commonly found in the language.",1320-CLEAR,"This COBOL code is part of a larger program that handles web queries. It checks if the length of the query string is equal to 7, and if so, it unstrings the query string and stores the first part in QUERY-TEXT and the second part in CLEAR-TEXT. It then performs a series of operations based on the value of CLEAR-TEXT, and if it is equal to '*', it executes a CICS transaction.",0.75,1
+37,shamrice_COBOL-Roguelike,X-COBOL/X-COBOL/COBOL_Files/shamrice_COBOL-Roguelike/crl_engine.cbl,"       debug-set-full-map-exploration.
+           
+           perform varying ws-counter-1 
+           from 1 by 1 until ws-counter-1 > ws-max-map-height
+               perform varying ws-counter-2 
+               from 1 by 1 until ws-counter-2 > ws-max-map-width
+
+                   set ws-is-explored(ws-counter-1, ws-counter-2) 
+                       to true    
+
+               end-perform 
+           end-perform 
+
+           exit paragraph.","       01  red                            constant as 4.
+
+       78  ws-max-map-height              value 25.
+
+       78  ws-max-map-width               value 80.
+
+       01  ws-map-explored-data.
+
+           05  ws-map-explored-y         occurs ws-max-map-height times.
+
+               10  ws-map-explored-x     occurs ws-max-map-width times.
+
+                   15  ws-map-explored        pic a value 'N'.
+
+                       88  ws-is-explored     value 'Y'.
+
+       01  ws-counter-1                 pic 999 comp.
+
+       01  ws-counter-2                 pic 999 comp.
+",[],13,Debug paragraph to set the full map as explored.,,,,"### Response:
+This code is used to set the entire map exploration to true. It uses two counters, `ws-counter-1` and `ws-counter-2`, to iterate through each cell in the map represented by `ws-map-explored-data`. The `occurs` keyword is used to define the number of times each level of the structure will be repeated. The innermost level, `ws-map-explored`, is initialized with the value `'N'`, which represents that the cell has not been explored yet. The `88` statement is then used to define a condition where `ws-is-explored` is true if `ws-map-explored` is equal to `'Y'`.",debug-set-full-map-exploration,"This COBOL code is used to set a map as fully explored. It uses nested loops to iterate through each cell of the map and sets the ""ws-is-explored"" flag to true for each cell. The map is represented by a 2D array called ""ws-map-explored-data"", and the dimensions of the map are defined by ""ws-max-map-height"" and ""ws-max-map-width"". The code uses two counters, ""ws-counter-1"" and ""ws-counter-2"", to keep track of the current position in the map. The code then exits the paragraph after setting all the cells as explored.",1,1
+69,cicsdev_cics-async-api-credit-card-application-example,X-COBOL/X-COBOL/COBOL_Files/cicsdev_cics-async-api-credit-card-application-example/GETADDR.cbl,"       MAINLINE SECTION.
+
+
+           EXEC CICS GET CONTAINER (INPUT-CONTAINER)
+                           INTO    ( ACCOUNT-NUMBER-IN )
+                           RESP    ( COMMAND-RESP )
+                           RESP2   ( COMMAND-RESP2 )
+           END-EXEC
+
+           IF ACCOUNT-NUMBER-IN = '0001'
+           THEN
+             MOVE '1 HURSLEY PARK, WINCHESTER, UK' TO CUSTOMER-ADDRESS
+             MOVE 'SO21 2JN'                       TO CUSTOMER-POSTCODE
+           ELSE
+             MOVE '123 HIGH STREET, LONDON, UK'    TO CUSTOMER-ADDRESS
+             MOVE 'S14 4WG'                        TO CUSTOMER-POSTCODE
+           END-IF
+
+           EXEC CICS DELAY FOR SECONDS(5)
+           END-EXEC
+
+           EXEC CICS PUT CONTAINER ( GETADDR-CONTAINER )
+                           FROM    ( CUSTOMER-ADDRESS )
+                           RESP    ( COMMAND-RESP )
+                           RESP2   ( COMMAND-RESP2 )
+           END-EXEC
+           EXEC CICS PUT CONTAINER ( GETPOST-CONTAINER )
+                           FROM    ( CUSTOMER-POSTCODE )
+                           RESP    ( COMMAND-RESP )
+                           RESP2   ( COMMAND-RESP2 )
+           END-EXEC
+           EXEC CICS RETURN
+           END-EXEC.","       1 ACCOUNT-NUMBER-IN.
+
+       1 RETURN-DATA.
+
+         2 CUSTOMER-ADDRESS       PIC X(80) VALUE ' '.
+
+         2 CUSTOMER-POSTCODE      PIC X(8)  VALUE ' '.
+
+       1 CONTAINER-NAMES.
+
+         2 INPUT-CONTAINER    PIC X(16) VALUE 'INPUTCONTAINER  '.
+
+         2 GETADDR-CONTAINER  PIC X(16) VALUE 'GETADDRCONTAINER'.
+
+         2 GETPOST-CONTAINER  PIC X(16) VALUE 'GETPOSTCODE     '.
+
+       1 COMMAND-RESP  PIC S9(8) COMP.
+
+       1 COMMAND-RESP2 PIC S9(8) COMP.
+",[],41,"GETADDR - Get the postal address for the customer. An account number is used to retrieve the address for the client as stored locally. The address is then used to call an external address service, via web service, to retrieve a verified and canonicalised address and postcode/zipcode.",,,,"### Response:
+This code is written in COBOL and it's used to retrieve customer address and postcode from an input container and store them in output containers. The code first checks if the account number is '0001', and if so, sets the customer address and postcode accordingly. If not, it sets a different address and postcode. Then, it waits for 5 seconds before storing the address and postcode in their respective output containers. Finally, it returns control back to the calling program.",MAINLINE,"This COBOL code is a program that retrieves a customer's address and postcode based on their account number. It uses the CICS GET CONTAINER and PUT CONTAINER commands to retrieve and store the data. The program then uses an IF statement to determine which address and postcode to use based on the account number. Finally, it uses the CICS DELAY command to wait for 5 seconds before completing the program.",0.75,1
+93,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ZECS000.cbl,"       1300-WRITE.
+           MOVE EIBTRNID                 TO ZX-KEY.
+           MOVE LENGTH OF ZX-RECORD      TO ZX-LENGTH.
+
+           EXEC CICS FORMATTIME
+                ABSTIME (CURRENT-ABS)
+                TIME    (ZX-TIME)
+                YYYYMMDD(ZX-DATE)
+                TIMESEP
+                DATESEP
+                NOHANDLE
+           END-EXEC.
+
+           MOVE CURRENT-ABS              TO ZX-ABSTIME.
+           MOVE APPLID                   TO ZX-APPLID.
+           MOVE EIBTASKN                 TO ZX-TASKID.
+
+           EXEC CICS WRITE
+                FILE   (ZX-FCT)
+                RIDFLD (ZX-KEY)
+                FROM   (ZX-RECORD)
+                LENGTH (ZX-LENGTH)
+                NOHANDLE
+           END-EXEC.
+
+           IF  EIBRESP EQUAL DFHRESP(DUPREC)
+               PERFORM 8000-RESTART    THRU 8000-EXIT
+               PERFORM 9000-RETURN     THRU 9000-EXIT.","       01  CURRENT-ABS            PIC S9(15) VALUE ZEROES COMP-3.
+
+       01  ZX-FCT                 PIC  X(08) VALUE 'ZCEXPIRE'.
+
+       01  ZX-LENGTH              PIC S9(04) COMP VALUE ZEROES.
+
+       01  ZX-RECORD.
+
+           02  ZX-KEY             PIC  X(04).
+
+           02  ZX-ABSTIME         PIC S9(15) COMP-3 VALUE ZEROES.
+
+           02  ZX-DATE            PIC  X(10).
+
+           02  ZX-TIME            PIC  X(08).
+
+           02  ZX-APPLID          PIC  X(08).
+
+           02  ZX-TASKID          PIC  9(06).
+
+       01  APPLID                 PIC  X(08) VALUE SPACES.
+","['8000-RESTART', '9000-EXIT', '8000-EXIT', '9000-RETURN']",27,Issue WRITE to zcEXPIRE control file with default information.,,,['EXECCICSWRIT'],"1300-WRITE.
+           MOVE EIBTRNID                 TO ZX-KEY.
+           MOVE LENGTH OF ZX-RECORD      TO ZX-LENGTH.
+           EXEC CICS FORMATTIME
+                ABSTIME (CURRENT-ABS)
+                TIME    (ZX-TIME)
+                YYYYMMDD(ZX-DATE)
+                TIMESEP
+                DATESEP
+                NOHANDLE
+           END-EXEC.
+           MOVE CURRENT-ABS              TO ZX-ABSTIME.
+           MOVE APPLID                   TO ZX-APPLID.
+           MOVE EIBTASKN                 TO ZX-TASKID.
+           EXEC CICS WRITE
+                FILE   (ZX-FCT)
+               RIDFLD (ZX-KEY)
+                FROM   (ZX-RECORD)
+                LENGTH (ZX-LENGTH)
+                NOHANDLE
+           END-EXEC.
+           IF  EIBRESP EQUAL DFHRESP(DUPREC)
+               PERFORM 8000-RESTART    THRU 8000-EXIT
+               PERFORM 9000-RETURN     THRU 9000-EXIT.",1300-WRITE,"This COBOL code is responsible for writing data to a CICS file. It moves the transaction ID and the length of the record into variables, then uses EXEC CICS FORMATTIME to convert the current time into a date and time format. It then moves the current time, application ID, and task ID into the record and uses EXEC CICS WRITE to write the record to the specified file. If the response is a duplicate record, it performs a restart and returns.",0.5,1
+102,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ZECS000.cbl,"       7000-GET-URL.
+
+           EXEC CICS DOCUMENT CREATE DOCTOKEN(DC-TOKEN)
+                TEMPLATE(ZECS-DC)
+                NOHANDLE
+           END-EXEC.
+
+           MOVE LENGTH OF DC-CONTROL TO DC-LENGTH.
+
+           IF  EIBRESP EQUAL DFHRESP(NORMAL)
+               EXEC CICS DOCUMENT RETRIEVE DOCTOKEN(DC-TOKEN)
+                    INTO     (DC-CONTROL)
+                    LENGTH   (DC-LENGTH)
+                    MAXLENGTH(DC-LENGTH)
+                    DATAONLY
+                    NOHANDLE
+               END-EXEC.
+
+           IF  EIBRESP EQUAL DFHRESP(NORMAL)
+           AND DC-LENGTH GREATER THAN TEN
+               SUBTRACT TWELVE FROM DC-LENGTH
+                             GIVING THE-OTHER-DC-LENGTH
+
+               EXEC CICS WEB PARSE
+                    URL(THE-OTHER-DC)
+                    URLLENGTH(THE-OTHER-DC-LENGTH)
+                    SCHEMENAME(URL-SCHEME-NAME)
+                    HOST(URL-HOST-NAME)
+                    HOSTLENGTH(URL-HOST-NAME-LENGTH)
+                    PORTNUMBER(URL-PORT)
+                    NOHANDLE
+               END-EXEC.
+
+           IF  EIBRESP NOT EQUAL DFHRESP(NORMAL)
+           OR  DC-LENGTH LESS THAN TEN
+           OR  DC-LENGTH EQUAL            TEN
+               MOVE ACTIVE-SINGLE                 TO DC-TYPE.","       01  TWELVE                 PIC S9(02) VALUE     12 COMP-3.
+
+       01  TEN                    PIC S9(02) VALUE     10 COMP-3.
+
+       01  ZECS-DC.
+
+       01  ACTIVE-SINGLE          PIC  X(02) VALUE 'A1'.
+
+       01  DC-CONTROL.
+
+           02  DC-TYPE            PIC  X(02) VALUE SPACES.
+
+           02  THE-OTHER-DC       PIC X(160) VALUE SPACES.
+
+       01  DC-LENGTH              PIC S9(08) COMP  VALUE ZEROES.
+
+       01  DC-TOKEN               PIC  X(16) VALUE SPACES.
+
+       01  THE-OTHER-DC-LENGTH    PIC S9(08) COMP  VALUE 160.
+
+       01  URL-SCHEME-NAME        PIC  X(16) VALUE SPACES.
+
+       01  URL-SCHEME             PIC S9(08) COMP VALUE ZEROES.
+
+       01  URL-PORT               PIC S9(08) COMP VALUE ZEROES.
+
+       01  URL-HOST-NAME          PIC  X(80) VALUE SPACES.
+
+       01  URL-HOST-NAME-LENGTH   PIC S9(08) COMP VALUE 80.
+",[],36,Get URL for deplication process. URL must be in the following format: http://hostname:port,,,,"<Answer>
+This code is written in COBOL, which is a programming language used for business applications. It is part of a larger program that retrieves data from a database using the CICS (Customer Information Control System) transaction server. The code first creates a document token using the CICS DocumentCREATE verb, then retrieves the document using the CICS DocumentRetrieve verb. If the response is normal and the length of the retrieved data is greater than ten, it uses the CICS WebParse verb to extract information from a URL contained within the retrieved data. Finally, if any of these operations fail or if the length of the retrieved data is less than or equal to ten, it sets the value of DC-TYPE to ""A1"".",7000-GET-URL,"This COBOL code is used to retrieve a URL and parse it to extract the scheme name, host name, and port number. The code first creates a document token and retrieves the document control using the token. It then checks the length of the document control and, if it is greater than 10, it subtracts 12 from it to get the length of the URL. It then uses the CICS WEB PARSE verb to parse the URL and extract the scheme name, host name, and port number. Finally, it checks the response and length of the document control and sets the document type accordingly.",0.5,1
+59,brazilofmux_gnucobol,X-COBOL/X-COBOL/COBOL_Files/brazilofmux_gnucobol/holidays_program_3.cbl,"0100-main.
+    compute ld2-max = ld-max - k + 1.
+    move floor-divmod(ld2-max, c7) to divmod.
+    subtract m from ld-max giving ld.
+    move 'Y' to bool.
+    goback.","       01  ld2-max                signed-int.
+
+       01  c7           pic s9(8) comp-5 value 7.
+
+       01  divmod.
+
+           05  d            pic s9(8) comp-5.
+
+           05  m            pic s9(8) comp-5.
+
+       01  k                   usage   unsigned-short.
+
+       01  ld-max              usage   signed-int.
+
+       01  result.
+
+           05  ld                  usage   signed-int.
+
+           05  bool              pic x.
+",[],7,Returns a requested day of the week where the week ends on a certain date.,,,,"### Response:
+This code is calculating the largest divisor (d) and remainder (m) of ld-max divided by 7. It then subtracts m from ld-max to get ld. Finally, it sets bool to 'Y'.",0100-main,"The COBOL code is performing a calculation to determine the value of ld and bool based on the values of ld-max, k, and c7. The code first calculates ld2-max by subtracting k from ld-max and adding 1. Then, it uses the floor-divmod function to divide ld2-max by c7 and store the result in divmod. The m component of divmod is then subtracted from ld-max to obtain ld. Finally, the code sets bool to 'Y' and returns.",0,1
+101,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ZECS000.cbl,"       3220-SYNCPOINT.
+           MOVE ZEROES  TO RECORD-COUNT.
+
+           EXEC CICS SYNCPOINT NOHANDLE
+           END-EXEC.
+
+           EXEC CICS DELAY INTERVAL(0) NOHANDLE
+           END-EXEC.","       01  RECORD-COUNT           PIC S9(04) VALUE      0 COMP-3.
+",[],7,Issue SYNCPOINT every TEN records.,,,,"### Response:
+This code snippet is written in COBOL and contains two CICS (Customer Information Control System) statements. The first statement, ""MOVE ZEROES TO RECORD-COUNT"", sets the value of the variable ""RECORD-COUNT"" to zero. The second statement, ""EXEC CICS SYNCPOINT NOHANDLE END-EXEC"", issues a CICS Syncpoint request without associating a handle with it. This request causes all pending changes to be flushed from the system's buffers to permanent storage, ensuring data consistency across different CICS regions and applications. The subsequent ""EXEC CICS DELAY INTERVAL(0) NOHANDLE END-EXEC"" statement issues a CICS Delay request with an interval of zero seconds, which effectively suspends processing of any subsequent requests until the completion of the current request or task.",3220-SYNCPOINT,"The COBOL code above is used to implement a synchronization point in a program. The `MOVE ZEROES TO RECORD-COUNT` statement initializes the `RECORD-COUNT` variable to zero. The `EXEC CICS SYNCPOINT NOHANDLE` statement then issues a CICS synchronization point request without associating a handle with the request. Finally, the `EXEC CICS DELAY INTERVAL(0) NOHANDLE` statement issues a CICS delay request with a zero-length interval.",0.5,1
+77,cicsdev_cics-async-api-redbooks,X-COBOL/X-COBOL/COBOL_Files/cicsdev_cics-async-api-redbooks/WEBHOME.cbl,"       GET-INPUT-ACCOUNT-NUMBER.
+           EXEC CICS RECEIVE INTO       ( READ-INPUT )
+                             LENGTH     ( READ-INPUT-LENGTH )
+                             NOTRUNCATE
+                             RESP       ( COMMAND-RESP )
+                             RESP2      ( COMMAND-RESP2 )
+           END-EXEC
+
+           IF INPUTACCNUM = '    '
+           THEN 
+             MOVE '9999' TO CUST-NO-IN
+             MOVE '9999' TO ACCOUNT-NUM
+           ELSE
+             MOVE INPUTACCNUM TO CUST-NO-IN
+             MOVE INPUTACCNUM TO ACCOUNT-NUM
+           END-IF
+
+           PERFORM PRINT-TEXT-TO-SCREEN
+           .
+
+       PRINT-CURRENT-ACCOUNTS-DETAILS.
+           IF NUMBER-OF-ACCOUNTS OF CURRENT-ACCOUNTS > 0 THEN
+             MOVE 1 TO COUNTER
+             PERFORM UNTIL COUNTER > 
+                       NUMBER-OF-ACCOUNTS OF CURRENT-ACCOUNTS
+               INITIALIZE STATUS-MSG
+               STRING 'Acc: '
+                      DELIMITED BY SIZE
+                      ACCT-NUMBER OF CURRENT-ACCOUNTS (COUNTER)
+                      DELIMITED BY SPACE
+                      ' Bal: $'
+                      DELIMITED BY SIZE
+                      BALANCE OF CURRENT-ACCOUNTS (COUNTER)
+                      DELIMITED BY SIZE
+                      ' Overdraft: $'
+                      DELIMITED BY SIZE
+                      OVERDRAFT OF CURRENT-ACCOUNTS (COUNTER)
+                      DELIMITED BY SIZE
+                    INTO MSG-TEXT
+               PERFORM PRINT-STATUS-MESSAGE
+               ADD 1 TO COUNTER
+             END-PERFORM
+           END-IF
+           .","       1 ACCOUNT-NUMBER-IN.
+
+         2 CUST-NO-IN             PIC X(4).
+
+       1 RETURN-DATA.
+
+         2 CUSTOMER-ACCOUNTS.
+
+          3 CURRENT-ACCOUNTS.
+
+           4  NUMBER-OF-ACCOUNTS  PIC S9(4) COMP-5 SYNC VALUE 9.
+
+           4  ACCOUNT-DETAILS OCCURS 5 TIMES.
+
+            5  ACCT-NUMBER        PIC X(8) VALUE ' '.
+
+            5  BALANCE            PIC X(8) VALUE ' '.
+
+            5  OVERDRAFT          PIC X(8) VALUE ' '.
+
+          3 PARTNER-ACCOUNTS.
+
+           4  NUMBER-OF-ACCOUNTS  PIC S9(4) COMP-5 SYNC VALUE 9.
+
+           4  ACCOUNT-DETAILS OCCURS 5 TIMES.
+
+            5  ACCT-NUMBER        PIC X(8) VALUE ' '.
+
+            5  BALANCE            PIC X(8) VALUE ' '.
+
+            5  OVERDRAFT          PIC X(8) VALUE ' '.
+
+       1 TERMINAL-STATUS.
+
+         2 ACCOUNT-NUM            PIC X(4)  VALUE '    '.
+
+       1 STATUS-MSG.
+
+         2 MSG-TEXT              PIC X(61) VALUE ' '.
+
+       1 READ-INPUT.
+
+         2 INPUTACCNUM           PIC X(4) VALUE '    '.
+
+       1 READ-INPUT-LENGTH       PIC S9(4) COMP-5 SYNC VALUE 9.
+
+       1 COMMAND-RESP            PIC S9(8) COMP.
+
+       1 COMMAND-RESP2           PIC S9(8) COMP.
+
+       1 COUNTER                 PIC S9(4) COMP-5 SYNC VALUE 9.
+","['PRINT-TEXT-TO-SCREEN', 'PRINT-STATUS-MESSAGE']",47,"Retrieve the customer account number, which should be specified on the terminal command after the transaction ID.",,,,"### Response:
+This code is used to print text to the screen using the CICS (Customer Information Control System) transaction processing system. The CICS SEND command is used to send the contents of the TERMINAL-STATUS variable to the terminal associated with the current program, and the options specified in the command ensure that the terminal is waiting for input, that any available keyboard buffer space is freed, and that any existing output on the terminal is erased before the new text is printed.",GET-INPUT-ACCOUNT-NUMBER,"This COBOL code is used to get the input account number from the user. It uses the CICS RECEIVE INTO statement to read the input and store it in the READ-INPUT variable. The length of the input is stored in the READ-INPUT-LENGTH variable. If the input account number is empty, it sets the CUST-NO-IN and ACCOUNT-NUM variables to '9999'. Otherwise, it moves the input account number to both CUST-NO-IN and ACCOUNT-NUM. Finally, it sends the text to the screen.",0.75,1
+118,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ZECS001.cbl,"       1300-QUERY-STRING.
+           IF  WEB-HTTPMETHOD EQUAL WEB-HTTP-POST    OR
+               WEB-HTTPMETHOD EQUAL WEB-HTTP-PUT
+               PERFORM 1310-TTL          THRU 1310-EXIT.
+
+           IF  WEB-HTTPMETHOD EQUAL WEB-HTTP-DELETE
+               PERFORM 1320-CLEAR        THRU 1320-EXIT.
+
+           IF  URI-PATH-LENGTH EQUAL ZEROES
+               MOVE HTTP-KEY-ZERO          TO HTTP-400-TEXT
+               PERFORM 9400-STATUS-400   THRU 9400-EXIT
+               PERFORM 9000-RETURN       THRU 9000-EXIT.","       01  HTTP-400-TEXT          PIC  X(32) VALUE SPACES.
+
+       01  HTTP-KEY-ZERO.
+
+       01  URI-PATH-LENGTH        PIC S9(08) COMP VALUE ZEROES.
+
+       01  WEB-HTTPMETHOD         PIC  X(10) VALUE SPACES.
+
+       01  WEB-HTTP-PUT           PIC  X(10) VALUE 'PUT'.
+
+       01  WEB-HTTP-POST          PIC  X(10) VALUE 'POST'.
+
+       01  WEB-HTTP-DELETE        PIC  X(10) VALUE 'DELETE'.
+","['1320-EXIT', '9400-EXIT', '9400-STATUS-400', '1310-EXIT', '1320-CLEAR', '9000-EXIT', '9000-RETURN', '1310-TTL']",11,"Process query string. In this paragraph, all special processing must be handled in one of the PERFORM statements and must XCTL from the zECS service program. After special processing has been checked, this paragraph will check the KEY length as determined in the 1160-MOVE-URI paragraph. If the KEY length (URI-PATH-LENGTH) is zero, then issue a 400 status code, as the key must be provided on all non-special processing.",,,,"Exit is a common programming term that refers to the act of leaving a program or subroutine. Exit can be used to terminate a program, return control to a calling routine, or exit a loop or conditional block. Exit is often used when a certain condition is met, such as an error condition or the completion of a task.
+
+In COBOL, the EXIT statement is used to exit from a program or subroutine. It is similar to the RETURN statement in other programming languages. When the EXIT statement is executed, the program immediately terminates and returns control to the calling program or operating system.
+
+In the given code snippet, the EXIT statement is used to exit from the current program or subroutine. The code checks the value of the variable ""EXIT"" and performs different actions based on its value. If the value of ""EXIT"" is greater than zero, the program performs some calculations and then exits. Otherwise, it continues executing the program.
+
+Overall, the EXIT statement is a useful tool for controlling the flow of a program and can be used to terminate a program or return control to a calling routine.",1300-QUERY-STRING,"This COBOL code is part of a larger program that handles HTTP requests. It checks the HTTP method of the request and performs different actions based on the method. If the method is POST or PUT, it calls a subroutine to set a time limit for a record. If the method is DELETE, it calls a subroutine that handles web queries and performs actions based on a query string. If the URI path length is zero, it sets the HTTP status to a client error (400) and returns.",0.5,1
+106,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ZECS000.cbl,"       8000-RESTART.
+
+           MOVE LENGTH OF ZC-PARM TO ZC-LENGTH.
+           MOVE LOW-VALUES        TO ZC-KEY.
+
+           EXEC CICS START TRANSID(EIBTRNID)
+                INTERVAL(1500)
+                FROM    (ZC-PARM)
+                LENGTH  (ZC-LENGTH)
+                NOHANDLE
+           END-EXEC.","       01  ZC-PARM.
+
+           02  ZC-KEY             PIC  X(16) VALUE LOW-VALUES.
+
+       01  ZC-LENGTH              PIC S9(04) COMP VALUE 20.
+",[],10,Restart (ICE chain). 15 minute interval for normal processing,,,,"### Response:
+This code is used to restart a transaction in a mainframe environment using the CICS (Customer Information Control System) transaction processing system. The code moves the length of a parameter (ZC-PARM) into another variable (ZC-LENGTH), and then uses the CICS START TRANSID statement to initiate a new transaction with a specified transaction ID (EIBTRNID). The transaction will run every 1500 seconds, and it will retrieve data from the ZC-PARM parameter with a length of ZC-LENGTH. The NOHANDLE option ensures that the transaction does not generate a handle that can be used to refer to it later.",8000-RESTART,This COBOL code is used to restart a transaction. It moves the length of a parameter to a variable called ZC-LENGTH and then moves the low-values to a variable called ZC-KEY. It then executes a CICS START TRANSID command with the given parameters.,0.5,1
+91,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ZECS000.cbl,"       1100-CONTROL.
+           PERFORM 1200-ENQ            THRU 1200-EXIT.
+
+           MOVE EIBTRNID                 TO ZX-KEY.
+           MOVE LENGTH OF ZX-RECORD      TO ZX-LENGTH.
+
+           EXEC CICS READ
+                FILE   (ZX-FCT)
+                RIDFLD (ZX-KEY)
+                INTO   (ZX-RECORD)
+                LENGTH (ZX-LENGTH)
+                RESP   (ZX-RESP)
+                UPDATE
+                NOHANDLE
+           END-EXEC.
+
+           IF  ZX-RESP EQUAL DFHRESP(NOTFND)
+               PERFORM 1300-WRITE      THRU 1300-EXIT.
+
+           IF  ZX-RESP EQUAL DFHRESP(NORMAL)
+               PERFORM 1400-UPDATE     THRU 1400-EXIT.","       01  ZX-FCT                 PIC  X(08) VALUE 'ZCEXPIRE'.
+
+       01  ZX-RESP                PIC S9(08) COMP VALUE ZEROES.
+
+       01  ZX-LENGTH              PIC S9(04) COMP VALUE ZEROES.
+
+       01  ZX-RECORD.
+
+           02  ZX-KEY             PIC  X(04).
+","['1400-UPDATE', '1200-EXIT', '1200-ENQ', '1300-WRITE', '1400-EXIT', '1300-EXIT']",20,Read zcEXPIRE control file when a 'resume' key is not provided on the RETRIEVE command. Issue an ENQ to serialize the expiration proces.,,,['EXECCICSREA'],"1200-ENQ: This code moves the length of a parameter (ZC-PARM) into another variable (ZC-LENGTH), and then uses the CICS START TRANSID statement to initiate a new transaction with a specified transaction ID (EIBTRNID). The transaction will run every 1500 seconds, and it will retrieve data from the ZC-PARM parameter with a length of ZC-LENGTH. The NOHANDLE option ensures that the transaction does not generate a handle that can be used to refer to it later.
+
+1300-WRITE: This code moves the length of a parameter (ZC-PARM) into another variable (ZC-LENGTH), and then uses the CICS FORMATTIME statement to format the current time and date into variables (ZX-TIME, ZX-DATE, and ZX-ABSTIME). It then moves the current absolute time into the ZX-ABSTIME variable, and moves the application ID (APPLID) and task ID (EIBTASKN) into other variables. Finally, it uses the CICS WRITE statement to write the data to the ZCEXPIRE file with a key of EIBTRNID and a length of ZC-LENGTH.
+
+1400-UPDATE: This code moves the length of a parameter (ZC-PARM) into another variable (ZC-LENGTH), and then uses the CICS FORMATTIME statement to format the current time and date into variables (ZX-TIME, ZX-DATE, and ZX-ABSTIME). It then moves the current absolute time into the ZX-ABSTIME variable, and moves the application ID (APPLID) and task ID (EIBTASKN) into other variables. Finally, it uses the CICS REWRITE statement to update the data in the ZCEXPIRE file with a key of EIBTRNID and a length of ZC-LENGTH.",1100-CONTROL,"The COBOL code is a program that performs a read operation on a CICS file using the CICS READ statement. The program first performs an enqueue operation using the PERFORM statement, then moves the EIBTRNID to the ZX-KEY, the length of the ZX-RECORD to the ZX-LENGTH, and then executes the CICS READ statement. If the response from the read operation is NOTFND, the program performs a write operation using the PERFORM statement. If the response is NORMAL, the program performs an update operation using the PERFORM statement.",0.5,1
+21,IBM_example-health-apis,X-COBOL/X-COBOL/COBOL_Files/IBM_example-health-apis/HCATDB01.cbl,"       INSERT-PATIENT-THRESHOLD.
+           MOVE ' INSERT THRESHOLD' TO EM-SQLREQ
+             EXEC SQL
+               INSERT INTO THRESHOLD
+                         ( PATIENTID,
+                           HEARTRATE,
+                           BLOODPRESSURE )
+                  VALUES ( :DB2-PATIENT-ID,
+                           :CA-HR-THRESHOLD,
+                           :CA-BP-THRESHOLD )
+             END-EXEC
+             IF SQLCODE NOT EQUAL 0
+               MOVE '90' TO CA-RETURN-CODE
+               PERFORM WRITE-ERROR-MESSAGE
+               EXEC CICS RETURN END-EXEC
+             END-IF
+
+           MOVE DB2-PATIENT-ID TO CA-PATIENT-ID.
+
+           EXIT.","       01  DB2-OUT.
+
+           03 DB2-PATIENT-ID        PIC S9(9) COMP.
+
+       01  ERROR-MSG.
+
+           03 EM-VARIABLE.
+
+             05 EM-SQLREQ              PIC X(16) VALUE SPACES.
+",['WRITE-ERROR-MESSAGE'],24,Insert row into Threshold table based on patient number,,,,"1. This code is written in COBOL, a programming language used for business applications.
+2. It contains a mainline that moves spaces to the variables WRITE-MSG and WS-RECV.
+3. It then executes CICS (Customer Information Control System) commands to assign values to these variables based on certain conditions.
+4. The code also includes conditional logic to handle different scenarios and execute additional CICS commands as needed.
+5. Finally, it writes data to two queues using CICS commands and returns control back to the calling program.",INSERT-PATIENT-THRESHOLD,"The COBOL code is used to insert a patient's threshold into a database. The threshold includes the patient's ID, heart rate, and blood pressure. The code uses SQL to insert the threshold values into the database table called THRESHOLD. If the SQL code returns an error, the code sets the return code to 90 and performs an error message write. Finally, the code moves the patient ID to a variable called CA-PATIENT-ID and exits.",1,1
+9,bmcsoftware_vscode-ispw,X-COBOL/X-COBOL/COBOL_Files/bmcsoftware_vscode-ispw/CWBWCOBX.cbl,"       7000-PRINT-REGION-REPORT.
+           IF REG-LINE-COUNT GREATER THAN 55
+               PERFORM 7100-PRINT-REGION-HEADERS.
+           MOVE SPACES TO REGION-DETAIL.
+           MOVE REGION-NAME    (REGION-SUB) TO REG-DTL-REGION.
+           MOVE REGION-MANAGER (REGION-SUB) TO REG-DTL-MANAGER.
+           MOVE REGION-SALARY  (REGION-SUB) TO REG-DTL-SALARY.
+           MOVE REGION-SALES   (REGION-SUB) TO REG-DTL-SALES.
+           MOVE REGION-SALES   (REGION-SUB) TO CALC-SALES.
+           MOVE REGION-COMMENT (REGION-SUB) TO REG-DTL-COMMENT.
+           MOVE 'M' TO EMP-TYPE.
+           CALL 'CWBWSUBC' USING EMP-TYPE,
+                                 CALC-SALES,
+                                 CALC-COMMISSION.
+           MOVE CALC-COMMISSION TO REG-DTL-COMM.
+           COMPUTE MGMT-COMPENSATION = CALC-COMMISSION +
+                                      REGION-SALARY(REGION-SUB).
+           ADD  MGMT-COMPENSATION TO GRAND-TOTAL-MGMT.
+           MOVE MGMT-COMPENSATION TO REG-DTL-TOTAL.
+           WRITE REPORT-RECORD FROM REGION-DETAIL.
+           IF REGION-SUB = 4
+              WRITE REPORT-RECORD FROM BLANK-LINE
+              MOVE GRAND-TOTAL-MGMT TO MGMT-GRAND-TOTAL
+              WRITE REPORT-RECORD FROM MGMT-TOTAL-DTL.
+           ADD 1 TO REG-LINE-COUNT.
+           ADD 1 TO REGION-SUB.","       01  REPORT-RECORD              PIC X(80).
+
+       01  COUNTERS.
+
+           05  REG-LINE-COUNT         PIC S99      VALUE +56.
+
+       01  REGION-SUB                 PIC 9        VALUE 0.
+
+       01  REGION-SALES-TABLE.
+
+           05  REGION-DATA         OCCURS 4 TIMES.
+
+               10  REGION-NAME       PIC X(5).
+
+               10  REGION-MANAGER    PIC X(15).
+
+               10  REGION-SALARY     PIC 9(4)V99.
+
+               10  REGION-SALES      PIC 9(6)V99.
+
+               10  REGION-COMMENT    PIC X(5).
+
+       01  CALC-COMMISSION-FIELDS.
+
+           05  EMP-TYPE              PIC X.
+
+           05  CALC-SALES            PIC 9(6)V99           VALUE 0.
+
+           05  CALC-COMMISSION       PIC 9(5)V99  COMP-3   VALUE 0.
+
+       01  TOTAL-FIELDS.
+
+           05  MGMT-COMPENSATION     PIC 9(5)V99    COMP-3.
+
+       01  GRAND-TOTAL-FIELDS.
+
+           05  GRAND-TOTAL-MGMT      PIC 9(7)V99   COMP-3  VALUE 0.
+
+       01  EMPLOYEE-WORK-AREA.
+
+           05  WA-EMP-TYPE           PIC X.
+
+               88  SALES             VALUE 'S'.
+
+       01  REGION-DETAIL.
+
+           05  REG-DTL-MANAGER    PIC X(15).
+
+           05  REG-DTL-REGION     PIC X(5).
+
+           05  REG-DTL-SALES      PIC ZZZZZ9V99.
+
+           05  REG-DTL-SALARY     PIC ZZZ9.99.
+
+           05  REG-DTL-COMM       PIC ZZZZ9V99.
+
+           05  REG-DTL-TOTAL      PIC ZZZZ9V99.
+
+           05  REG-DTL-COMMENT    PIC X(5).
+
+       01  MGMT-TOTAL-DTL.
+
+           05  MGMT-GRAND-TOTAL   PIC ZZZZZZ9V99.
+
+       01  BLANK-LINE             PIC X(80)   VALUE SPACES.
+
+       01  PARMINFO.
+
+           03  GRAND-TOTAL        PIC S9(7) COMP.
+",['7100-PRINT-REGION-HEADERS'],25,COMPENSATION DATA FOR MANAGEMENT EMPLOYEES IS PRINTED TO THE REGIONAL SALES REPORT. THE TOTAL SALES FOR THE REGION IS PASSED TO THE CALLED PROGRAM WHICH CALCULATES COMMISSION. THIS REPORT IS GENERATED AT END-OF-MONTH.,,['CWBWSUBC'],,"<Explanation>
+This code is part of a COBOL program that prints region headers for a report. It moves the current page count to a variable called ""REG-PAGE"", and then moves the year, month, and day values from a date field called ""TODAYS-DATE"" to variables called ""REG-RUN-YEAR"", ""REG-RUN-MONTH"", and ""REG-RUN-DAY"". It then writes several lines of text to a record called ""REPORT-RECORD"" using the ""WRITE"" statement, including the values of the variables just set. Finally, it adds 1 to the value in the ""PAGE-COUNT"" variable and sets the ""REG-LINE-COUNT"" variable to 4.",7000-PRINT-REGION-REPORT,"This COBOL code is used to print a region report. It checks if the number of lines in the report is greater than 55, and if so, it calls a subroutine to print region headers. It then moves various region details into a detail record and calls a subroutine to calculate commission. It updates grand total management and writes the report record. If the region subtotal is 4, it writes a blank line and the management grand total. It then increments the region subtotal and line count.",0.5,1
+82,cicsdev_cics-async-api-redbooks,X-COBOL/X-COBOL/COBOL_Files/cicsdev_cics-async-api-redbooks/WEBHOME.cbl,"       CHECK-COMMAND.
+           IF COMMAND-RESP NOT = DFHRESP(NORMAL)
+           THEN
+             PERFORM WEBHOME-ERROR
+           END-IF
+           .","       1 COMMAND-RESP            PIC S9(8) COMP.
+",['WEBHOME-ERROR'],5,Routine to check command,,,,"### Response:
+This code checks the value of the COMMAND- RESP variable and if it is not equal to the normal response, then it performs the action of printing an error message.",CHECK-COMMAND,"This COBOL code checks if the COMMAND-RESP variable is not equal to the value of the constant DFHRESP(NORMAL). If it is not equal, it performs a subroutine that initializes a status message, displays the text '*** Error occurred in WEBHOME.' on the screen with the current time, updates the current status to 'FAILED', and displays this text on the screen again. Finally, it executes a command to signal an error with the code 'WEBH' without creating a dump.",1,1
+50,Martinfx_Cobol,X-COBOL/X-COBOL/COBOL_Files/Martinfx_Cobol/ForLoop.cbl,"       MAIN-PROCEDURE.
+
+           PERFORM FOR-UNTIL-LOOP.
+           PERFORM FOR-VAIRING-LOOP.
+           GOBACK.
+
+           FOR-UNTIL-LOOP SECTION.
+
+           PERFORM UNTIL W-I > 20
+             MOVE W-I TO W-J
+             ADD 1 TO W-I
+
+             PERFORM UNTIL W-J > 20
+               COMPUTE W-K = W-J * W-I
+               DISPLAY ""UNTIL: "" W-I  "" W-K: "" W-K "" = "" W-J "" * "" W-I
+               ADD 1 TO W-J
+
+             END-PERFORM
+           END-PERFORM.
+
+
+           FOR-VAIRING-LOOP SECTION.
+
+           ADD 0 TO W-I
+           ADD 0 TO W-J
+           ADD 0 TO W-K
+
+           PERFORM VARYING W-I FROM 1 BY 1 UNTIL W-I > 20
+             MOVE W-I TO W-J
+             ADD 1 TO W-I
+
+             PERFORM VARYING W-J FROM 1 BY 1 UNTIL W-J > 20
+               COMPUTE W-K = W-J * W-I
+               DISPLAY ""VARYING: "" W-I  "" W-K: "" W-K "" = "" W-J "" * "" W-I
+               ADD 1 TO W-J
+             END-PERFORM
+
+           END-PERFORM.","       01 W-I PIC 999 VALUE 0.
+
+       01 W-J PIC 999 VALUE 0.
+
+       01 W-K PIC 999 VALUE 0.
+","['FOR-VAIRING-LOOP', 'FOR-UNTIL-LOOP']",37,Program demonstration for loop in cobol program.,,,,"### Response:
+This code is written in COBOL, which is a programming language used for business applications. It contains a nested loop structure that uses the PERFORM verb to repeat a set of statements until a condition is met. The outer loop will continue to execute as long as the value of variable W-I is less than or equal to 30. Within the outer loop, there is an inner loop that also uses the PERFORM verb to repeat a set of statements until the value of variable W-J is greater than 40. Inside the inner loop, the value of W-K is calculated by multiplying the values of W-J and W-I, and then it is displayed using the DISPLAY verb.",MAIN-PROCEDURE,"The COBOL code above is a program that contains two loops, a loop that continues until a condition is met and a loop that runs a varying number of times. The first loop is used to repeat a set of instructions until a certain condition is satisfied. The second loop is used to repeat a set of instructions for a changing number of times. Finally, the GOBACK statement is used to return to the beginning of the program.",1,1
+89,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ECS001.cbl,"       Z1000-EXIT-PROGRAM.
+
+           EXEC CICS SEND
+                FROM  ( TERM-DATA )
+                LENGTH( LENGTH OF TERM-DATA )
+                ERASE
+                NOHANDLE
+           END-EXEC.
+
+           EXEC CICS RETURN
+           END-EXEC.","       01  I                           PIC 9(04) COMP.
+
+       01  TERM-DATA.
+",[],13,post appropiate message to terminal and exit.,,,,"### Response:
+This code is used to send data from the mainframe to an interactive terminal. The program first sends the data using the CICS SEND command, which takes the data from the TERM-DATA variable, its length from the LENGTH OF TERM-DATA, and erases it after sending. Then, the program returns control back to the calling program using the CICS RETURN command.",Z1000-EXIT-PROGRAM,"This COBOL code is used to exit a program and send data to a terminal. The ""EXEC CICS SEND"" statement is used to send the data from the ""TERM-DATA"" variable to the terminal, and the ""EXEC CICS RETURN"" statement is used to return control to the CICS system. The ""FROM"" clause specifies the data to be sent, the ""LENGTH"" clause specifies the length of the data, and the ""ERASE"" clause erases the data after it has been sent. The ""NOHANDLE"" clause is used to prevent the program from generating a handle for the terminal data.",1,1
+35,shamrice_COBOL-Roguelike,X-COBOL/X-COBOL/COBOL_Files/shamrice_COBOL-Roguelike/crl_editor.cbl,"       set-file-names.
+           move function concatenate(
+               function trim(ws-map-name), ws-data-file-ext)
+               to ws-map-dat-file
+
+           move function concatenate(
+               function trim(ws-map-name), ws-teleport-file-ext)
+               to ws-map-tel-file            
+
+           move function concatenate(
+               function trim(ws-map-name), ws-enemy-file-ext)
+               to ws-map-enemy-file       
+           
+           exit paragraph.","       01  ws-map-files.  
+
+           05  ws-map-name             pic x(15) value ""VOIDSPACE"".
+
+           05  ws-map-dat-file         pic x(15).               
+
+           05  ws-map-tel-file         pic x(15).
+
+           05  ws-map-enemy-file       pic x(15).
+
+       78  ws-data-file-ext               value "".DAT"".
+
+       78  ws-teleport-file-ext           value "".TEL"".
+
+       78  ws-enemy-file-ext              value "".BGS"".
+
+       01  ws-enemy-data.
+
+           05  ws-enemy             occurs 0 to ws-max-num-enemies times
+
+                                    depending on ws-cur-num-enemies.
+",[],14,Set file names based on map name,,,,"### Response:
+This code is used to set file names for different types of files related to a map in a game. The <CODE>set-file-names</CODE> subroutine concatenates the map name with specific file extensions to create the file names for the map data, teleports, and enemies. The resulting file names are stored in the variables <CODE>ws-map-dat-file</CODE>, <CODE>ws-map-tel-file</CODE>, and <CODE>ws-map-enemy-file</CODE>. The file extensions are defined as <CODE>.DAT</CODE>, <CODE>.TEL</CODE>, and <CODE>.BGS</CODE> respectively.",set-file-names,"This COBOL code is responsible for setting file names based on a given map name. It uses the `concatenate` function to combine the map name with different file extensions to create the file names for the map data, teleportation, and enemy data. The resulting file names are stored in the variables `ws-map-dat-file`, `ws-map-tel-file`, and `ws-map-enemy-file`.",1,1
+57,brazilofmux_gnucobol,X-COBOL/X-COBOL/COBOL_Files/brazilofmux_gnucobol/holidays_program_1.cbl,"0100-main.
+    move 'N' to ye-success
+    if (-27256 <= ye-year) and (ye-year <= 30826)
+        move fielded_to_linear(ye-year, month, dom) to ye-lineardate
+        move 'Y' to ye-success
+    end-if.
+    goback.","       01  month           pic 99      comp-5 value 12.
+
+       01  dom             pic 99      comp-5 value 31.
+
+       01  ye-year              pic s9(5)   comp-5.
+
+       01  results.
+
+           05  ye-lineardate        pic s9(8)   comp-5.
+
+           05  ye-success           pic x.
+",[],6,Returns the linear date for the last day of the given year.,,,,"### Response:
+This code is written in COBOL and it checks whether the input year is within a certain range and then calculates the linear date based on the input year, month, and day. If the year is within the specified range, the code sets the success flag to ""Y"" and returns the calculated linear date. Otherwise, it sets the success flag to ""N"".",0100-main,"This COBOL code is used to calculate the linear date from the given year, month, and day. It first checks if the given year is within the valid range. If it is, it calls the fielded_to_linear function to calculate the linear date and sets the success flag to 'Y'. If the year is outside the valid range, it sets the success flag to 'N'.",0.5,1
+116,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ZECS001.cbl,"       1200-VALIDATION.
+           MOVE 'Y'                    TO AUTHENTICATE.
+
+           IF  WEB-SCHEME EQUAL DFHVALUE(HTTP)
+               MOVE 'N'                TO AUTHENTICATE.
+
+           IF  WEB-SCHEME EQUAL DFHVALUE(HTTPS)
+               PERFORM 1210-ZCXXSD   THRU 1210-EXIT.","       01  AUTHENTICATE           PIC  X(01) VALUE SPACES.
+
+       01  WEB-SCHEME             PIC S9(08) COMP VALUE ZEROES.
+","['1210-EXIT', '1210-ZCXXSD']",7,"Basic Authentication is optional. When HTTP, Basic Authentication is not performed. When HTTPS, Basic Authentication is perform when the security model (ZCxxSD) is defined.",,,,1234,1200-VALIDATION,"The COBOL code is checking if the WEB-SCHEME is equal to either ""HTTP"" or ""HTTPS"". If it is equal to ""HTTP"", it sets the AUTHENTICATION to ""N"". If it is equal to ""HTTPS"", it performs the user authentication and data retrieval process through a simple program that ends execution.",0.75,1
+115,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ZECS001.cbl,"       1160-MOVE-URI.
+           SUBTRACT   URI-PATH-POINTER  FROM  WEB-PATH-LENGTH
+               GIVING URI-PATH-LENGTH.
+
+           IF  URI-PATH-LENGTH GREATER THAN TWO-FIFTY-FIVE
+               MOVE HTTP-KEY-PLUS           TO HTTP-400-TEXT
+               PERFORM 9400-STATUS-400    THRU 9400-EXIT
+               PERFORM 9000-RETURN        THRU 9000-EXIT.
+
+           ADD  ONE   TO URI-PATH-POINTER.
+           IF  URI-PATH-LENGTH GREATER THAN ZEROES
+               MOVE WEB-PATH(URI-PATH-POINTER:URI-PATH-LENGTH)
+               TO   URI-KEY(1:URI-PATH-LENGTH).","       01  TWO-FIFTY-FIVE         PIC S9(08) COMP VALUE 255.
+
+       01  FIVE                   PIC S9(08) COMP VALUE  5.
+
+       01  TWO                    PIC S9(08) COMP VALUE  2.
+
+       01  ONE                    PIC S9(08) COMP VALUE  1.
+
+       01  HTTP-400-TEXT          PIC  X(32) VALUE SPACES.
+
+       01  HTTP-KEY-PLUS.
+
+       01  URI-KEY                PIC X(255) VALUE LOW-VALUES.
+
+       01  URI-PATH-POINTER       PIC S9(08) COMP VALUE ZEROES.
+
+       01  URI-PATH-LENGTH        PIC S9(08) COMP VALUE ZEROES.
+
+       01  WEB-PATH-LENGTH        PIC S9(08) COMP VALUE 512.
+
+       01  WEB-PATH               PIC X(512) VALUE LOW-VALUES.
+","['9400-EXIT', '9400-STATUS-400', '9000-EXIT', '9000-RETURN']",12,"Move URI key when present. When ?clear= is present, the key is ignored. In this case, a URI key is probably not be present.",,,,"The code inside the <CODE> and </CODE> tags is written in COBOL, which is a programming language used for business applications. It is part of a larger program that includes a data division and a procedure division. The data division defines the input and output data, while the procedure division contains the logic for processing the data.
+
+In this specific code snippet, the ""9400-EXIT"" statement is a perform statement that directs the program to exit at the end of the current iteration of the enclosing PERFORM loop. The ""EXIT"" statement without any associated level number is a shorthand way of exiting the innermost currently executing PERFORM loop.
+
+Overall, this code segment is a simple example of using the EXIT statement to terminate a loop in a COBOL program.",1160-MOVE-URI,"This COBOL code is used to move the URI path pointer and subtract the URI path length from the web path length. If the URI path length is greater than 255, it moves the HTTP key plus to the HTTP 400 text and performs the status 400 and exit. It then performs the return and exit. If the URI path length is greater than zero, it moves the web path to the URI key.",0.5,1
+99,walmartlabs_zECS,X-COBOL/X-COBOL/COBOL_Files/walmartlabs_zECS/ZECS000.cbl,"       3200-DELETE.
+           PERFORM 3210-DELETE   THRU 3210-EXIT
+               WITH TEST AFTER
+               VARYING ZF-SEGMENT      FROM 1 BY 1
+               UNTIL   ZF-SEGMENT      GREATER THAN ZF-SEGMENTS.
+
+
+           EXEC CICS DELETE FILE(ZK-FCT)
+                RIDFLD(ZF-ZK-KEY)
+                NOHANDLE
+           END-EXEC.
+
+           ADD ONE TO RECORD-COUNT.
+           IF  RECORD-COUNT GREATER THAN TEN
+               PERFORM 3220-SYNCPOINT    THRU 3220-EXIT.
+
+           ADD ONE TO DELETE-COUNT.
+           IF  DELETE-COUNT GREATER THAN FIVE-HUNDRED
+               PERFORM 8100-RESTART      THRU 8100-EXIT
+               PERFORM 9000-RETURN       THRU 9000-EXIT.","       01  TEN                    PIC S9(02) VALUE     10 COMP-3.
+
+       01  ONE                    PIC S9(02) VALUE      1 COMP-3.
+
+       01  FIVE-HUNDRED           PIC S9(04) VALUE    500 COMP-3.
+
+       01  RECORD-COUNT           PIC S9(04) VALUE      0 COMP-3.
+
+       01  DELETE-COUNT           PIC S9(04) VALUE      0 COMP-3.
+
+       01  ZK-FCT.
+
+       01  ZK-RECORD.
+
+           02  ZK-KEY             PIC X(255) VALUE LOW-VALUES.
+
+       01  ZF-RECORD.
+
+           02  ZF-KEY-16.
+
+               05  ZF-SEGMENT     PIC  9(04) VALUE ZEROES COMP.
+
+           02  ZF-SEGMENTS        PIC  9(04) VALUE ZEROES COMP.
+
+           02  ZF-ZK-KEY          PIC  X(255).
+","['8100-RESTART', '3210-DELETE', '3220-EXIT', '9000-EXIT', '3220-SYNCPOINT', '9000-RETURN', '3210-EXIT', '8100-EXIT']",19,Delete the local cache record.,,,,"1. This code is used to restart a transaction in a mainframe environment using the CICS (Customer Information Control System) transaction processing system. The code moves the length of a parameter (ZC-PARM) to a variable (ZC-LENGTH), and then moves a key value (ZF-KEY-16) to another variable (ZC-KEY). Finally, it uses the EXEC statement to start a new transaction with the specified transaction ID (EIBTRNID), interval (0002), input data (ZC-PARM), input data length (ZC-LENGTH), and without a handle.
+
+2. This code is written in COBOL (Common Business Oriented Language) and it is used to delete a file named ""ZF-FCT"" from a mainframe system using the CICS (Customer Information Control System) transaction processing system. The code uses the CICS DELETE FILE statement to perform the deletion operation.
+
+3. This code is written in COBOL, which is a programming language used for business applications. The code snippet provided is part of a larger program that includes a data division and a procedure division. In the data division, there are two working storage sections defined. The first section, named ""WS-VARIABLES,"" contains three variables: WS-A, WS-B, and WS-C. These variables are used to store numeric values. The second section, named ""WS-OUTPUT,"" contains a single variable named WS-ANSWER, which will be used to display the result of a calculation.
+
+4. This code is written in COBOL, which is a programming language used for business applications. The code snippet provided is a simple program that uses the CICS (Customer Information Control System) subroutine to return control back to the CICS server. The ""EXEC CICS RETURN"" statement is used to invoke the CICS RETURN subroutine, which returns control back to the CICS server.
+
+5. This code is written in COBOL, which is a programming language used for business applications. The code snippet provided is part of a larger program that includes a data division, procedure division, and other sections. In this specific section of the code, we have a working storage section that defines a variable named ""EXIT"" as aPIC X(4). This variable is likely being used to store some sort of exit status or flag value. The next section of the code is the procedure division, where we have a single statement: EXIT. This statement is most likely a control statement that is used to terminate the current program or subroutine. It may also be used to transfer control to another part of the program.",3200-DELETE,"The COBOL code is a program that performs a series of operations on a set of data. It starts by performing a loop that iterates over a varying segment from 1 to the value of ZF-SEGMENTS. Inside the loop, it executes a command to delete a file (ZK-FCT) based on a specific key (ZF-ZK-KEY). It then increments the RECORD-COUNT and checks if it has reached a certain limit (TEN). If so, it performs a synchronization point. It also increments the DELETE-COUNT and checks if it has reached another limit (FIVE-HUNDRED). If so, it restarts the transaction and then returns control to the system.",1,1
+15,IBM_example-health-apis,X-COBOL/X-COBOL/COBOL_Files/IBM_example-health-apis/HCMRESTW.cbl,"       RETRIEVE-METHOD.
+
+           EXEC CICS GET CONTAINER('DFHHTTPMETHOD')
+                         INTO(WS-HTTP-METHOD)
+                         RESP(RESP)
+                         RESP2(RESP2)
+           END-EXEC
+           IF RESP NOT = DFHRESP(NORMAL)
+           THEN
+              EXEC CICS ABEND
+                     ABCODE('MEAB')
+              END-EXEC
+           END-IF.","       01 WS-HTTP-METHOD             PIC X(8).
+
+       77 RESP                       PIC S9(8) COMP-5 SYNC.
+
+       77 RESP2                      PIC S9(8) COMP-5 SYNC.
+",[],12,Retrieve the content of the method container,,,,"### Response:
+This code retrieves the HTTP method from the CICS container 'DFHHTTPMETHOD' and stores it in the variable WS-HTTP-METHOD. It then checks if the response (RESP) is not equal to the normal response value, and if so, it executes a CICS ABEND with the abend code 'MEAB'.",RETRIEVE-METHOD,"The COBOL code is used to retrieve the HTTP method from a CICS container. The method is stored in the variable WS-HTTP-METHOD. If the response code (RESP) is not equal to the normal response code (DFHRESP(NORMAL)), the code will ABEND with the code 'MEAB'.",1,1
+66,cicsdev_cics-async-api-credit-card-application-example,X-COBOL/X-COBOL/COBOL_Files/cicsdev_cics-async-api-credit-card-application-example/CRDTCHK.cbl,"       MAINLINE SECTION.
+
+
+           EXEC CICS GET CONTAINER ( INPUT-CONTAINER )
+                           INTO    ( ACCOUNT-NUMBER-IN )
+                           RESP    ( COMMAND-RESP )
+                           RESP2   ( COMMAND-RESP2 )
+           END-EXEC
+
+           IF ACCOUNT-NUMBER-IN = '0001'
+           THEN
+             MOVE '998' TO CREDIT-CHECK-RESULT
+           ELSE
+             MOVE '537' TO CREDIT-CHECK-RESULT
+           END-IF
+
+           EXEC CICS DELAY FOR SECONDS(5)
+           END-EXEC
+
+           EXEC CICS PUT CONTAINER ( CRDTCHK-CONTAINER )
+                           FROM    ( CREDIT-CHECK-RESULT )
+                           RESP    ( COMMAND-RESP )
+                           RESP2   ( COMMAND-RESP2 )
+           END-EXEC
+
+           EXEC CICS RETURN
+           END-EXEC.","       1 ACCOUNT-NUMBER-IN.
+
+       1 RETURN-DATA.
+
+         2 CREDIT-CHECK-RESULT    PIC X(3)  VALUE '   '.
+
+       1 CONTAINER-NAMES.
+
+         2 INPUT-CONTAINER    PIC X(16) VALUE 'INPUTCONTAINER  '.
+
+         2 CRDTCHK-CONTAINER  PIC X(16) VALUE 'CREDITCHECKCONT '.
+
+       1 PROG-NAMES.
+
+         2 CREDIT-CHECK       PIC X(8) VALUE 'CRDTCHK '.
+
+       1 COMMAND-RESP  PIC S9(8) COMP.
+
+       1 COMMAND-RESP2 PIC S9(8) COMP.
+",[],32,CRDTCHK - Credit check for an account. An account number is used to call an external credit check service which returns a three digit crdit score.,,,,"### Response:
+This code is written in COBOL, which is a programming language used for business applications. It contains a program named ""MAINLINE"" that performs the following tasks:
+
+- Executes a CICS (Customer Information Control System) GET CONTAINER command to retrieve data from an input container into an account number variable.
+- Checks if the account number is equal to '0001'. If it is, it sets the value of the CREDIT-CHECK-RESULT variable to '998'. Otherwise, it sets it to '537'.
+- Delays execution for 5 seconds using the CICS DELAY command.
+- Executes a CICS PUT CONTAINER command to store the value of the CREDIT-CHECK-RESULT variable into a credit check container.
+- Finally, it executes a CICS RETURN command to end the program.
+
+Overall, this code appears to be part of a larger application that performs some sort of credit check based on an input account number and returns a result.",MAINLINE,This COBOL code is a program that performs a credit check on an account. It uses the CICS (Customer Information Control System) GET CONTAINER and PUT CONTAINER commands to retrieve and store data in containers. The program checks the account number and sets the credit check result accordingly. It then uses the CICS DELAY command to wait for 5 seconds before executing the CICS RETURN command to end the program.,0.75,1
+38,shamrice_COBOL-Roguelike,X-COBOL/X-COBOL/COBOL_Files/shamrice_COBOL-Roguelike/display_action_history.cbl,"       main-procedure.
+
+           move ws-draw-row-start to ls-draw-y
+           move 01 to ls-draw-x 
+
+           perform varying ls-counter 
+           from ws-max-entries by -1 
+           until ls-counter = 0 or ls-draw-y > 25
+           
+               if l-action-history-text(ls-counter) not = spaces then 
+                   display ws-line-mask at ls-draw-pos
+                   display l-action-history-text(ls-counter) 
+                       at ls-draw-pos 
+                   end-display 
+                   add 1 to ls-draw-y 
+               end-if                
+           end-perform     
+           goback.","       78  ws-max-entries               value 150.
+
+       78  ws-draw-row-start            value 21.
+
+       01  ws-line-mask                 pic x(75) value spaces.
+
+       01  ls-counter                   pic 999 comp.
+
+       01  ls-draw-pos.
+
+           05  ls-draw-y                pic 99.
+
+           05  ls-draw-x                pic 99.       
+
+       01  l-action-history.
+
+           05  l-action-history-item     occurs 150 times.
+
+               10  l-action-history-text pic x(75).
+",[],17,Module for engine to display action history to the screen.,,,,"### Response:
+This code is part of a larger program that is used to display action history text on the screen. The code uses a loop to iterate through a list of action history items, and for each item it checks if the text is not empty. If the text is not empty, it displays the text at a specific position on the screen using the COBOL 'DISPLAY' statement. The position on the screen is determined by the values of 'ls-draw-x' and 'ls-draw-y'. The loop continues until all items have been processed or until the position on the screen exceeds the maximum value. Finally, the code ends with the 'goback' statement which returns control to the calling program.",main-procedure,"This COBOL code is part of a larger program that is used to display action history text. The code uses a perform varying loop to iterate through a list of action history items, and for each item, it checks if the text is not blank. If the text is not blank, it displays the text at a specific position on the screen. The position is determined by the ls-draw-pos variable, which is calculated based on the ls-draw-x and ls-draw-y variables. The ls-draw-y variable is incremented after each display, and the loop continues until all items have been processed or the ls-draw-y variable exceeds 25.",0.75,1
