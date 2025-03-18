@@ -1,0 +1,28 @@
+       IDENTIFICATION DIVISION.
+        PROGRAM-ID. 'EPSCSMRK'.
+        AUTHOR. WD4Z.
+        INSTALLATION. 9.0.0.V200809191411.
+        DATE-WRITTEN. 1/19/09 2:11 PM.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       LINKAGE SECTION.
+       1 LS2XML-XML-BUFFER-LENGTH PIC 9(9) COMP.
+       1 LS2XML-PROPERTIES PIC X.
+       PROCEDURE DIVISION USING
+           LS2XML-XML-BUFFER-LENGTH
+           LS2XML-PROPERTIES
+           .
+       MAINLINE SECTION.
+           IF ADDRESS OF LS2XML-XML-BUFFER-LENGTH
+                         NOT EQUAL NULL
+            MOVE 758
+              TO LS2XML-XML-BUFFER-LENGTH
+           END-IF
+           IF ADDRESS OF LS2XML-PROPERTIES
+                         NOT EQUAL NULL
+            MOVE X'00'
+              TO LS2XML-PROPERTIES
+           END-IF
+           GOBACK
+           .
+       END PROGRAM 'EPSCSMRK'.

@@ -1,0 +1,156 @@
+       IDENTIFICATION DIVISION.
+        PROGRAM-ID. 'XWSPFLTR'.
+        AUTHOR. WD4Z.
+        INSTALLATION. 9.0.0.V200809191411.
+        DATE-WRITTEN. 1/19/09 2:11 PM.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       LOCAL-STORAGE SECTION.
+       1 CONTENT-BUF PIC X(128).
+       1 CONTENT-BUF-NDX PIC 9(9) COMP.
+       1 CONTENT-TXT-NDX PIC 9(9) COMP.
+       1 CMP-TMPA PIC 9(9) COMP.
+       1 CMP-TMPB PIC 9(9) COMP.
+       LINKAGE SECTION.
+       1 CONTENT-WSP PIC X.
+       1 CONTENT-PTR POINTER.
+       1 CONTENT-LEN PIC 9(9) COMP.
+       1 CONTENT-TYPE PIC X.
+       1 CONTENT-TXT PIC X(128).
+       PROCEDURE DIVISION USING
+           BY VALUE CONTENT-WSP
+           BY VALUE CONTENT-PTR
+           BY REFERENCE CONTENT-LEN
+           BY VALUE CONTENT-TYPE
+           .
+       MAINLINE SECTION.
+           SET ADDRESS OF CONTENT-TXT
+            TO CONTENT-PTR
+           IF CONTENT-TYPE = 'X' OR
+              CONTENT-TYPE = 'D' OR
+              CONTENT-TYPE = 'U'
+            EVALUATE CONTENT-WSP
+             WHEN X'C3'
+              PERFORM REPLACE-CTRL-CHARS
+              PERFORM TRIM-LEADING-SPACES
+              PERFORM TRIM-TRAILING-SPACES
+              PERFORM COLLAPSE-SPACES
+             WHEN X'C1'
+              PERFORM REPLACE-CTRL-CHARS
+             WHEN X'C2'
+              PERFORM TRIM-TRAILING-SPACES-COMPAT
+            END-EVALUATE
+           ELSE
+            IF CONTENT-TYPE = 'N' OR
+               CONTENT-TYPE = 'F' OR
+               CONTENT-TYPE = 'B'
+              PERFORM TRIM-LEADING-SPACES
+              PERFORM TRIM-TRAILING-SPACES
+            END-IF
+            IF CONTENT-TYPE = 'N'
+             PERFORM TRIM-LEADING-ZEROS
+            END-IF
+           END-IF
+           GOBACK
+           .
+       TRIM-LEADING-SPACES.
+           MOVE 1 TO CONTENT-TXT-NDX
+           PERFORM TEST BEFORE
+            UNTIL CONTENT-TXT-NDX >= CONTENT-LEN OR
+            CONTENT-TXT(CONTENT-TXT-NDX:1) NOT = SPACE
+            ADD 1 TO CONTENT-TXT-NDX
+           END-PERFORM
+           IF CONTENT-TXT-NDX > 1
+            COMPUTE CONTENT-LEN
+             = CONTENT-LEN - (CONTENT-TXT-NDX - 1)
+            MOVE CONTENT-TXT(CONTENT-TXT-NDX:CONTENT-LEN)
+              TO CONTENT-BUF(1:CONTENT-LEN)
+            MOVE CONTENT-BUF(1:CONTENT-LEN)
+              TO CONTENT-TXT(1:CONTENT-LEN)
+           END-IF
+           .
+       TRIM-TRAILING-SPACES.
+           PERFORM TEST BEFORE
+            VARYING CONTENT-LEN FROM CONTENT-LEN BY -1
+            UNTIL CONTENT-LEN = 0
+            OR CONTENT-TXT(CONTENT-LEN:1) NOT = SPACE
+           END-PERFORM
+           .
+       TRIM-TRAILING-SPACES-COMPAT.
+           PERFORM TEST BEFORE
+            VARYING CONTENT-LEN FROM CONTENT-LEN BY -1
+            UNTIL CONTENT-LEN = 1
+            OR CONTENT-TXT(CONTENT-LEN:1) NOT = SPACE
+           END-PERFORM
+           .
+       REPLACE-CTRL-CHARS.
+           INSPECT CONTENT-TXT(1:CONTENT-LEN) REPLACING ALL
+            X'05' BY SPACE X'0B' BY SPACE
+            X'0D' BY SPACE X'25' BY SPACE
+           .
+       COLLAPSE-SPACES.
+           MOVE 1 TO CONTENT-TXT-NDX
+           MOVE 1 TO CONTENT-BUF-NDX
+           PERFORM TEST BEFORE
+            UNTIL CONTENT-TXT-NDX > CONTENT-LEN
+            IF CONTENT-TXT(CONTENT-TXT-NDX:1) = SPACE
+             MOVE CONTENT-TXT(CONTENT-TXT-NDX:1)
+               TO CONTENT-BUF(CONTENT-BUF-NDX:1)
+             ADD 1 TO CONTENT-TXT-NDX
+             ADD 1 TO CONTENT-BUF-NDX
+             PERFORM TEST BEFORE
+              UNTIL CONTENT-TXT-NDX > CONTENT-LEN OR
+               CONTENT-TXT(CONTENT-TXT-NDX:1) NOT = SPACE
+              ADD 1 TO CONTENT-TXT-NDX
+             END-PERFORM
+            ELSE
+             MOVE CONTENT-TXT(CONTENT-TXT-NDX:1)
+               TO CONTENT-BUF(CONTENT-BUF-NDX:1)
+             ADD 1 TO CONTENT-TXT-NDX
+             ADD 1 TO CONTENT-BUF-NDX
+            END-IF
+           END-PERFORM
+           COMPUTE CONTENT-LEN = CONTENT-BUF-NDX - 1
+           MOVE CONTENT-BUF(1:CONTENT-LEN)
+             TO CONTENT-TXT(1:CONTENT-LEN)
+           .
+       TRIM-LEADING-ZEROS.
+           MOVE 1 TO CONTENT-TXT-NDX
+           MOVE 1 TO CONTENT-BUF-NDX
+           IF CONTENT-LEN > 0
+              AND CONTENT-TXT(1:1) = '-'
+            MOVE CONTENT-TXT(1:1)
+              TO CONTENT-BUF(1:1)
+            ADD 1 TO CONTENT-TXT-NDX
+            ADD 1 TO CONTENT-BUF-NDX
+           END-IF
+           COMPUTE CMP-TMPA
+            = CONTENT-LEN - (CONTENT-TXT-NDX - 1)
+           IF CMP-TMPA > 0 AND
+              CONTENT-TXT(CONTENT-TXT-NDX:1) = '0'
+            INITIALIZE CMP-TMPB
+            INSPECT CONTENT-TXT(CONTENT-TXT-NDX:CMP-TMPA)
+             TALLYING CMP-TMPB FOR LEADING '0'
+            IF CMP-TMPB > 0
+             COMPUTE CMP-TMPA
+              = CONTENT-TXT-NDX + CMP-TMPB
+             IF CONTENT-TXT(CMP-TMPA:1) = '.'
+              SUBTRACT 1 FROM CMP-TMPB
+             END-IF
+             ADD CMP-TMPB TO CONTENT-TXT-NDX
+            END-IF
+           END-IF
+           COMPUTE CMP-TMPA
+            = CONTENT-LEN - (CONTENT-TXT-NDX - 1)
+           IF CMP-TMPA > 0
+            MOVE CONTENT-TXT(CONTENT-TXT-NDX:CMP-TMPA)
+              TO CONTENT-BUF(CONTENT-BUF-NDX:CMP-TMPA)
+            ADD  CMP-TMPA TO CONTENT-BUF-NDX
+           END-IF
+           COMPUTE CONTENT-LEN = CONTENT-BUF-NDX - 1
+           IF CONTENT-LEN > 0
+            MOVE CONTENT-BUF(1:CONTENT-LEN)
+              TO CONTENT-TXT(1:CONTENT-LEN)
+           END-IF
+           .
+       END PROGRAM 'XWSPFLTR'.

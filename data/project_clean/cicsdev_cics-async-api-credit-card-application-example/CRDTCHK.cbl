@@ -1,0 +1,43 @@
+       PROCESS CICS,NODYNAM,NSYMBOL(NATIONAL),TRUNC(STD)
+       IDENTIFICATION DIVISION.
+        PROGRAM-ID. CRDTCHK.
+        AUTHOR. GOHILPR.
+       ENVIRONMENT DIVISION.
+       DATA DIVISION.
+        WORKING-STORAGE SECTION.
+       1 ACCOUNT-NUMBER-IN.
+         2 CUST-NO-IN PIC X(4).
+       1 RETURN-DATA.
+         2 CREDIT-CHECK-RESULT    PIC X(3)  VALUE '   '.
+        LOCAL-STORAGE SECTION.
+       1 CONTAINER-NAMES.
+         2 INPUT-CONTAINER    PIC X(16) VALUE 'INPUTCONTAINER  '.
+         2 CRDTCHK-CONTAINER  PIC X(16) VALUE 'CREDITCHECKCONT '.
+       1 PROG-NAMES.
+         2 CREDIT-CHECK       PIC X(8) VALUE 'CRDTCHK '.
+       1 COMMAND-RESP  PIC S9(8) COMP.
+       1 COMMAND-RESP2 PIC S9(8) COMP.
+        LINKAGE SECTION.
+       PROCEDURE DIVISION .
+       MAINLINE SECTION.
+           EXEC CICS GET CONTAINER ( INPUT-CONTAINER )
+                           INTO    ( ACCOUNT-NUMBER-IN )
+                           RESP    ( COMMAND-RESP )
+                           RESP2   ( COMMAND-RESP2 )
+           END-EXEC
+           IF ACCOUNT-NUMBER-IN = '0001'
+           THEN
+             MOVE '998' TO CREDIT-CHECK-RESULT
+           ELSE
+             MOVE '537' TO CREDIT-CHECK-RESULT
+           END-IF
+           EXEC CICS DELAY FOR SECONDS(5)
+           END-EXEC
+           EXEC CICS PUT CONTAINER ( CRDTCHK-CONTAINER )
+                           FROM    ( CREDIT-CHECK-RESULT )
+                           RESP    ( COMMAND-RESP )
+                           RESP2   ( COMMAND-RESP2 )
+           END-EXEC
+           EXEC CICS RETURN
+           END-EXEC.
+       END PROGRAM 'CRDTCHK'.

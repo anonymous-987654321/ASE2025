@@ -1,0 +1,5 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID.  TEST10.
+       PROCEDURE DIVISION.
+           DISPLAY "Ten".
+           STOP RUN.

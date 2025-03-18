@@ -1,0 +1,5 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID.  TEST4.
+       PROCEDURE DIVISION.
+           DISPLAY "Four".
+           STOP RUN.

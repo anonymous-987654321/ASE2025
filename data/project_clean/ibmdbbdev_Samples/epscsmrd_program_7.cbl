@@ -1,0 +1,155 @@
+       IDENTIFICATION DIVISION.
+        PROGRAM-ID. 'EPSCSMRC'.
+        AUTHOR. WD4Z.
+        INSTALLATION. 9.0.0.V200809191411.
+        DATE-WRITTEN. 1/19/09 2:11 PM.
+       DATA DIVISION.
+       LOCAL-STORAGE SECTION.
+       1 CMP-TMPA PIC 9(9) COMP.
+       1 CMP-TMPB PIC 9(9) COMP.
+       1 VALID-TEXT-FLAG PIC X VALUE 'Y'.
+       1 NEXT-CHAR PIC X.
+       LINKAGE SECTION.
+       1 INSTRUCTIONS.
+       2 INSTRUCT OCCURS 22 TIMES
+            INDEXED BY INSTRUCT-NDX.
+       3 MBOPCODE PIC X.
+       3 MBWSPOPT PIC X.
+       3 MBDNMPTR POINTER.
+       3 MBDATPTR POINTER.
+       3 MBDATLEN PIC 9(9) COMP.
+       3 MBDATYPE PIC X.
+       3 MBSTGPTR POINTER.
+       3 MBETGPTR POINTER.
+       1 XML-BUFFER-OFFSET PIC 9(9) COMP.
+       1 XML-BUFFER PIC X(758).
+       1 MSGBLD-RETURN-CODE PIC S9(9) COMP.
+       1 XML-TAG-DESCRIPTOR.
+       2 XML-TAG-LEN PIC 9(4) COMP.
+       2 XML-TAG PIC X(88).
+       1 CONTENT-TXT PIC X(128).
+       1 LAST-INSTRUCTION PIC 9(9) COMP.
+       PROCEDURE DIVISION USING
+            INSTRUCTIONS XML-BUFFER-OFFSET
+            XML-BUFFER LAST-INSTRUCTION
+           RETURNING
+            MSGBLD-RETURN-CODE.
+       MAINLINE SECTION.
+           SET INSTRUCT-NDX TO 1
+           PERFORM UNTIL MBOPCODE(INSTRUCT-NDX) = X'FF'
+            EVALUATE MBOPCODE(INSTRUCT-NDX)
+            WHEN X'E0'
+             PERFORM START-TAG
+            WHEN X'E1'
+             PERFORM END-TAG
+            WHEN X'B0'
+             PERFORM START-TAG
+             PERFORM CONVERT-NUMERIC
+             PERFORM END-TAG
+            WHEN X'A0'
+             PERFORM START-TAG
+             PERFORM CONVERT-ALPHANUMERIC
+             PERFORM END-TAG
+            WHEN X'F0'
+             PERFORM START-TAG
+             PERFORM CONVERT-FLOAT
+             PERFORM END-TAG
+            END-EVALUATE
+            SET INSTRUCT-NDX UP BY 1
+           END-PERFORM
+           GOBACK
+           .
+       START-TAG.
+           SET ADDRESS OF XML-TAG-DESCRIPTOR
+            TO MBSTGPTR(INSTRUCT-NDX)
+           MOVE XML-TAG(1:XML-TAG-LEN)
+            TO XML-BUFFER(XML-BUFFER-OFFSET + 1:XML-TAG-LEN)
+           ADD XML-TAG-LEN TO XML-BUFFER-OFFSET
+           .
+       END-TAG.
+           SET ADDRESS OF XML-TAG-DESCRIPTOR
+            TO MBETGPTR(INSTRUCT-NDX)
+           MOVE XML-TAG(1:XML-TAG-LEN)
+            TO XML-BUFFER(XML-BUFFER-OFFSET + 1:XML-TAG-LEN)
+           ADD XML-TAG-LEN TO XML-BUFFER-OFFSET
+           .
+       CONVERT-ALPHANUMERIC.
+           CALL 'XCHRFLTR' USING
+            BY VALUE MBDATLEN(INSTRUCT-NDX)
+            BY VALUE MBDATPTR(INSTRUCT-NDX)
+            BY REFERENCE VALID-TEXT-FLAG
+           IF VALID-TEXT-FLAG EQUAL 'Y'
+           CALL 'XWSPFLTR' USING
+            BY VALUE MBWSPOPT(INSTRUCT-NDX)
+            BY VALUE MBDATPTR(INSTRUCT-NDX)
+            BY REFERENCE MBDATLEN(INSTRUCT-NDX)
+            BY VALUE MBDATYPE(INSTRUCT-NDX)
+            SET ADDRESS OF CONTENT-TXT
+             TO MBDATPTR(INSTRUCT-NDX)
+            PERFORM VARYING CMP-TMPA FROM 1 BY 1
+             UNTIL CMP-TMPA > MBDATLEN(INSTRUCT-NDX)
+             MOVE CONTENT-TXT(CMP-TMPA:1) TO NEXT-CHAR
+             EVALUATE NEXT-CHAR
+              WHEN '&'
+               MOVE '&amp;'
+                TO XML-BUFFER(XML-BUFFER-OFFSET + 1:5)
+               ADD 5 TO XML-BUFFER-OFFSET
+              WHEN '<'
+               MOVE '&lt;'
+                TO XML-BUFFER(XML-BUFFER-OFFSET + 1:4)
+               ADD 4 TO XML-BUFFER-OFFSET
+              WHEN '>'
+               MOVE '&gt;'
+                TO XML-BUFFER(XML-BUFFER-OFFSET + 1:4)
+               ADD 4 TO XML-BUFFER-OFFSET
+              WHEN ''''
+               MOVE '&apos;'
+                TO XML-BUFFER(XML-BUFFER-OFFSET + 1:6)
+               ADD 6 TO XML-BUFFER-OFFSET
+              WHEN '"'
+               MOVE '&quot;'
+                TO XML-BUFFER(XML-BUFFER-OFFSET + 1:6)
+               ADD 6 TO XML-BUFFER-OFFSET
+             WHEN OTHER
+               MOVE NEXT-CHAR
+                TO XML-BUFFER(XML-BUFFER-OFFSET + 1:1)
+               ADD 1 TO XML-BUFFER-OFFSET
+             END-EVALUATE
+            END-PERFORM
+           END-IF
+           .
+       CONVERT-NUMERIC.
+           SET ADDRESS OF CONTENT-TXT
+            TO MBDATPTR(INSTRUCT-NDX)
+           CALL 'XWSPFLTR' USING
+            BY VALUE MBWSPOPT(INSTRUCT-NDX)
+            BY VALUE MBDATPTR(INSTRUCT-NDX)
+            BY REFERENCE MBDATLEN(INSTRUCT-NDX)
+            BY VALUE MBDATYPE(INSTRUCT-NDX)
+           MOVE MBDATLEN(INSTRUCT-NDX)
+             TO CMP-TMPA
+           IF CMP-TMPA > 0
+            MOVE CONTENT-TXT(1:CMP-TMPA)
+              TO XML-BUFFER(XML-BUFFER-OFFSET + 1:CMP-TMPA)
+            ADD CMP-TMPA TO XML-BUFFER-OFFSET
+           ELSE
+            MOVE '0'
+              TO XML-BUFFER(XML-BUFFER-OFFSET + 1:1)
+            ADD 1 TO XML-BUFFER-OFFSET
+           END-IF
+           .
+       CONVERT-FLOAT.
+           SET ADDRESS OF CONTENT-TXT
+            TO MBDATPTR(INSTRUCT-NDX)
+           CALL 'XWSPFLTR' USING
+            BY VALUE MBWSPOPT(INSTRUCT-NDX)
+            BY VALUE MBDATPTR(INSTRUCT-NDX)
+            BY REFERENCE MBDATLEN(INSTRUCT-NDX)
+            BY VALUE MBDATYPE(INSTRUCT-NDX)
+           MOVE MBDATLEN(INSTRUCT-NDX)
+             TO CMP-TMPA
+           MOVE CONTENT-TXT(1:CMP-TMPA)
+             TO XML-BUFFER(XML-BUFFER-OFFSET + 1:CMP-TMPA)
+           ADD CMP-TMPA TO XML-BUFFER-OFFSET
+           .
+       END PROGRAM 'EPSCSMRC'.
