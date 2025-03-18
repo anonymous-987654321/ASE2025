@@ -162,5 +162,5 @@
                    display 'SQL Warning message:' sqlerrmc(1:sqlerrml)
                end-if
            end-if
-           exit section.
+       exit section.
        end program sign-guest-book.

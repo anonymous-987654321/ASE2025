@@ -49,7 +49,8 @@
        EXEC SQL INCLUDE SQLCA END-EXEC.        
        PROCEDURE DIVISION.
        000-main.
-           COPY setupenv_openjensen.        
+           SET ENVIRONMENT "OJ_DBG" TO "1"
+           SET ENVIRONMENT "OJ_LOG" TO "1"           
            CALL 'wui-print-header' USING BY REFERENCE dummy.
            CALL 'wui-start-html' USING BY CONTENT pagetitle
            ACCEPT content-length FROM ENVIRONMENT 'CONTENT_LENGTH'
@@ -64,7 +65,7 @@
            CALL 'wui-end-html' USING BY REFERENCE dummy.                
            GOBACK
            .
-        050-set-post-variables.
+       050-set-post-variables.
            ACCEPT value-string FROM ENVIRONMENT
                 'REQUEST_METHOD'
            END-ACCEPT

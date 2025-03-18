@@ -22,9 +22,9 @@
             PERFORM GENERATE-NUMBERS.
             PERFORM PRINT-NUMBER.
             GOBACK.
-           INIT-SEED SECTION.
+       INIT-SEED SECTION.
            MOVE FUNCTION RANDOM(FUNCTION SECONDS-PAST-MIDNIGHT) TO SEED.
-           GENERATE-NUMBERS SECTION.
+       GENERATE-NUMBERS SECTION.
             DISPLAY "-------------------------------------------------"
             DISPLAY "- Generating numbers .......                    -"
             DISPLAY "-------------------------------------------------"
@@ -32,7 +32,7 @@
               COMPUTE W-NUM = (FUNCTION RANDOM * 100) + 1
               MOVE W-NUM TO W-ARR(W-I)
             END-PERFORM.
-           PRINT-NUMBER SECTION.
+       PRINT-NUMBER SECTION.
             PERFORM UNTIL W-K > 200
               COMPUTE W-RANDOM-TIP = (FUNCTION RANDOM * 100) + 1
               ADD 1 TO W-K

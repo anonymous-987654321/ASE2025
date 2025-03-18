@@ -12,7 +12,9 @@
            05  ls-draw-y                pic 99.
            05  ls-draw-x                pic 99.       
        linkage section.
-       copy "engine/copybooks/l-action-history.cpy".
+       01  l-action-history.
+           05  l-action-history-item     occurs 150 times.
+               10  l-action-history-text pic x(75).
        procedure division using l-action-history.
        main-procedure.
            move ws-draw-row-start to ls-draw-y

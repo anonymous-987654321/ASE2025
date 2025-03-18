@@ -12,7 +12,8 @@
        EXEC SQL INCLUDE SQLCA END-EXEC.        
        PROCEDURE DIVISION.
        000-main.
-           COPY setupenv_openjensen. 
+           SET ENVIRONMENT "OJ_DBG" TO "1"
+           SET ENVIRONMENT "OJ_LOG" TO "1"           
            DISPLAY "*** ANSLUTNINGSTEST STARTAS ***"
            DISPLAY "*** DB: openjensen TBL: tbl_user ***"           
            PERFORM A100-connect-to-database

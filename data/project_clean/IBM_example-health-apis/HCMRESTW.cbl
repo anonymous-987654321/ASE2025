@@ -4,10 +4,36 @@
        CONFIGURATION SECTION.
        DATA DIVISION.
        WORKING-STORAGE SECTION.
-        01 JSON-REST-DATA.
-        COPY HCMRST01.
-        01 HCPAPP-PATIENT-DETAILS.
-        COPY HCCMARE2.
+       01 JSON-REST-DATA.
+             06 patient-medications.
+               09 patient-id                    PIC X(10).
+               09 medications2-num              PIC S9(9) COMP-5 SYNC.
+               09 medications OCCURS 50.
+                 12 medication-id                 PIC 9(10) DISPLAY.
+                 12 name                          PIC X(50).
+                 12 strength                      PIC X(20).
+                 12 amount                        PIC 9(3) DISPLAY.
+                 12 route                         PIC X(20).
+                 12 frequency                     PIC X(20).
+                 12 identifier                    PIC X(20).
+                 12 biomed-type                   PIC X(2).
+       01 HCPAPP-PATIENT-DETAILS.
+           03 CA-REQUEST-ID            PIC X(6).
+           03 CA-RETURN-CODE           PIC 9(2).
+           03 CA-PATIENT-ID            PIC 9(10).
+           03 CA-LIST-MEDICATION-REQUEST.
+              05 CA-NUM-MEDICATIONS    PIC 99 COMP-3.
+              05 CA-MEDICATIONS OCCURS 0 to 50 times
+                 depending on CA-NUM-MEDICATIONS.
+                 10 CA-MEDICATION-ID      PIC 9(10).
+                 10 CA-DRUG-NAME          PIC X(50).
+                 10 CA-STRENGTH           PIC X(20).
+                 10 CA-AMOUNT             PIC 9(03).
+                 10 CA-ROUTE              PIC X(20).
+                 10 CA-FREQUENCY          PIC X(20).
+                 10 CA-IDENTIFIER         PIC X(20).
+                 10 CA-TYPE               PIC X(2).
+.
        01 DEFAULT-CHANNEL            PIC X(16).
        01  WS-TSQ-FIELDS.
            03  WS-TSQ-NAME           PIC X(8) VALUE 'HCMRESTW'.

@@ -10,10 +10,21 @@
            function rss-parser.
        input-output section.
            file-control.           
-               copy "./copybooks/filecontrol/rss_list_file.cpy".
+               select optional fd-rss-list-file
+               assign to dynamic ws-rss-list-file-name
+               organization is indexed
+               access is dynamic
+               record key is f-rss-link
+               alternate record key is f-rss-feed-id.               
        data division.
        file section.
-           copy "./copybooks/filedescriptor/fd_rss_list_file.cpy".
+           FD fd-rss-list-file.
+           01  f-rss-list-record.               
+               05 f-rss-feed-id                pic 9(5) value zeros.
+               05 f-rss-feed-status            pic 9 value zero.
+               05 f-rss-title                  pic x(128) value spaces.               
+               05 f-rss-dat-file-name          pic x(128) value spaces.
+               05 f-rss-link                   pic x(256) value spaces.
        working-storage section.
        01  ws-pipe-record.
            05  ws-pipe-pointer                usage pointer.

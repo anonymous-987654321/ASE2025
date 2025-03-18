@@ -34,11 +34,11 @@
        01 W-RETIREMENT-WA                     PIC 9(4).
        01 W-COMAREA-LENGTH                    PIC 9(4) COMP.
        01 SAVE-COMM-AREA.
-          COPY EPSMTCOM.
+          10  PROCESS-INDICATOR               PIC X.
+          COPY EPSMTINP.
+          COPY EPSMTOUT.
        01  END-OF-TRANS-MSG                 PIC X(30)
              VALUE 'END OF TRANSACTION - THANK YOU'.
-           COPY DFHAID.
-           COPY EPSMLIS.
        01  OUTMAP REDEFINES EPSMLISI.
            03 FILLER PIC X(110).
            03 OUTMAP-REPEATE OCCURS 8 TIMES.
@@ -54,13 +54,32 @@
               05 OUTMAP-YEARS              PIC X(2).
            03 FILLER                       PIC X(5).
            03 OUTMAP-MSG                   PIC X(40).
-           COPY EPSNBRPM.
-           COPY EPSMORTF.
+       01  EPS-NUMBER-VALIDATION.
+           03 EPSPARM-VALIDATE-DATA     PIC X(13).
+           03 EPSPARM-MAX-LENGTH        PIC 99.
+           03 EPSPARM-NUMBER            PIC 9(13).
+           03 EPSPARM-DECIMAL           PIC V9(13).
+           03 EPSPARM-BINARY-NUMBER     PIC 9(9)V99 COMP.
+           03 EPSPARM-RETURN-ERROR      PIC X(80).
+       01  MORTGAGE-COMPANY-INFO.
+           03 MORT-FILE-COMPANY               PIC X(24).
+           03 MORT-FILE-PHONE-NUM             PIC X(13).
+           03 MORT-FILE-RATE                  PIC 9(3)V99.
+           03 MORT-FILE-RATE-RDF    REDEFINES MORT-FILE-RATE
+                                              PIC X(5).
+           03 MORT-FILE-LOAN                  PIC 9(10)V99.
+           03 MORT-FILE-LOAN-RDF    REDEFINES MORT-FILE-LOAN
+                                              PIC X(12).
+           03 MORT-FILE-YEARS                 PIC 9(2).
        01  W-COMMUNICATION-AREA.
-           COPY EPSMTCOM.
+          10  PROCESS-INDICATOR               PIC X.
+          COPY EPSMTINP.
+          COPY EPSMTOUT.
        LINKAGE SECTION.
        01 DFHCOMMAREA.
-       COPY EPSMTCOM.
+          10  PROCESS-INDICATOR               PIC X.
+          COPY EPSMTINP.
+          COPY EPSMTOUT.
        PROCEDURE DIVISION USING DFHCOMMAREA.
        EPSCMORT-MAINLINE.
            MOVE LENGTH OF DFHCOMMAREA to W-COMAREA-LENGTH.

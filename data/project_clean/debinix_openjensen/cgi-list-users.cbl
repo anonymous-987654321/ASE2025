@@ -69,10 +69,10 @@
            05 html-table-row-end       PIC X(5)   VALUE '</tr>'.
            05 html-table-cell-start    PIC X(4)   VALUE '<td>'.
            05 html-table-cell-end      PIC X(5)   VALUE '</td>'.
-        01 User-Type-Table.
+       01 User-Type-Table.
            05 tbl-user-type-name PIC X(40) OCCURS 4 TIMES INDEXED BY
                                                        idx-user-type.
-        01 Program-Name-Table.
+       01 Program-Name-Table.
            05 tbl-program-name   PIC X(40) OCCURS 2 TIMES INDEXED BY
                                                        idx-program.
        01 wn-user-type-number           PIC 9(4)  VALUE ZERO.
@@ -86,7 +86,8 @@
        01  wc-printscr-string      PIC X(40)  VALUE SPACE.
        PROCEDURE DIVISION.
        0000-Start.
-            COPY setupenv_openjensen.
+           SET ENVIRONMENT "OJ_DBG" TO "1"
+           SET ENVIRONMENT "OJ_LOG" TO "1"           
             PERFORM A0100-Init
             PERFORM B0100-Main
             PERFORM C0100-Exit
@@ -333,7 +334,27 @@
             goback
             .
        Z0100-Error-Routine.
-            COPY z0100-error-routine.
+           EVALUATE SQLSTATE
+               WHEN  "02000"
+                   MOVE 'Data återfinns ej i databasen'
+                       TO wc-printscr-string
+                   CALL 'stop-printscr' USING wc-printscr-string 
+              WHEN  "08003"
+              WHEN  "08001"
+                   MOVE 'Anslutning till databas misslyckades'
+                       TO wc-printscr-string
+                   CALL 'stop-printscr' USING wc-printscr-string 
+              WHEN  "23503"
+                   MOVE 'Kan ej ta bort data - pga tabellberoenden'
+                       TO wc-printscr-string
+                   CALL 'stop-printscr' USING wc-printscr-string                              
+              WHEN  SPACE
+                   MOVE 'Obekant fel - kontakta leverantören'
+                       TO wc-printscr-string
+                   CALL 'stop-printscr' USING wc-printscr-string  
+              WHEN  OTHER
+                   CALL 'error-printscr' USING SQLSTATE SQLERRMC
+           END-EVALUATE
             .
        Z0200-Disconnect.
             EXEC SQL

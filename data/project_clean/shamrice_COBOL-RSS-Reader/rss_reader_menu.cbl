@@ -9,19 +9,66 @@
            crt status is ws-crt-status.
        input-output section.
            file-control.                              
-               copy "./copybooks/filecontrol/rss_list_file.cpy".
-               copy "./copybooks/filecontrol/rss_last_id_file.cpy".
-               copy "./copybooks/filecontrol/rss_content_file.cpy".
+               select optional fd-rss-list-file
+               assign to dynamic ws-rss-list-file-name
+               organization is indexed
+               access is dynamic
+               record key is f-rss-link
+               alternate record key is f-rss-feed-id.               
+               select optional fd-rss-last-id-file
+               assign to dynamic ws-rss-last-id-file-name
+               organization is line sequential.
+               select fd-rss-content-file
+               assign to dynamic ws-rss-content-file-name
+               organization is line sequential.
        data division.
        file section.
-           copy "./copybooks/filedescriptor/fd_rss_list_file.cpy".
-           copy "./copybooks/filedescriptor/fd_rss_last_id_file.cpy".
-           copy "./copybooks/filedescriptor/fd_rss_content_file.cpy".
+           FD fd-rss-list-file.
+           01  f-rss-list-record.               
+               05 f-rss-feed-id                pic 9(5) value zeros.
+               05 f-rss-feed-status            pic 9 value zero.
+               05 f-rss-title                  pic x(128) value spaces.               
+               05 f-rss-dat-file-name          pic x(128) value spaces.
+               05 f-rss-link                   pic x(256) value spaces.
+           FD fd-rss-last-id-file.
+           01 f-rss-last-id-record               pic 9(5) value zeros.
+           FD fd-rss-content-file.
+           01  f-rss-content-record.
+               05  f-feed-id                  pic 9(5) values zeros.
+               05  f-feed-title               pic x(128) value spaces.
+               05  f-feed-site-link           pic x(256) value spaces.
+               05  f-feed-desc                pic x(256) value spaces.
+               05  f-num-items                pic 9(6) value 0.               
+               05  f-items                    occurs 0 to 15000 times 
+                                              depending on f-num-items.              
+                   10  f-item-title          pic x(128) value spaces.
+                   10  f-item-link           pic x(256) value spaces.
+                   10  f-item-guid           pic x(256) value spaces.
+                   10  f-item-pub-date       pic x(128) value spaces.
+                   10  f-item-desc           pic x(512) value spaces.
        working-storage section.
-       copy "screenio.cpy".
-       copy "./copybooks/wsrecord/ws-rss-list-record.cpy".
-       copy "./copybooks/wsrecord/ws-last-id-record.cpy".
-       copy "./copybooks/wsrecord/ws-rss-record.cpy".
+       01  ws-rss-list-record.           
+           05  ws-rss-feed-id                  pic 9(5) value zeros. 
+           05  ws-rss-feed-status              pic 9 value zero.          
+           05  ws-rss-title                    pic x(128) value spaces.           
+           05  ws-rss-dat-file-name            pic x(128) value spaces.
+           05  ws-rss-link                     pic x(256) value spaces.
+       01  ws-last-id-record                   pic 9(5) value zeros.
+       78  ws-max-rss-items                     value 15000.
+       77  ws-num-items-disp                    pic 9(6).
+       01  ws-rss-record.
+           05  ws-feed-id                       pic 9(5) value zeros.
+           05  ws-feed-title                    pic x(128) value spaces.
+           05  ws-feed-site-link                pic x(256) value spaces.
+           05  ws-feed-desc                     pic x(256) value spaces.
+           05  ws-num-items                     pic 9(6) value 0.           
+           05  ws-items              occurs 0 to ws-max-rss-items times 
+                                     depending on ws-num-items.
+               10 ws-item-title                 pic x(128) value spaces.
+               10 ws-item-link                  pic x(256) value spaces.
+               10 ws-item-guid                  pic x(256) value spaces.
+               10 ws-item-pub-date              pic x(128) value spaces.
+               10 ws-item-desc                  pic x(512) value spaces.
        01  ws-cursor-position. 
            05  ws-cursor-line                   pic 99. 
            05  ws-cursor-col                    pic 99. 
@@ -64,9 +111,151 @@
        linkage section.
        01  l-refresh-on-start                  pic a.
        screen section.
-       copy "./screens/rss_list_screen.cpy".
-       copy "./screens/blank_screen.cpy".
-       copy "./screens/message_screen.cpy".
+       01  s-rss-list-screen           
+           blank screen 
+           foreground-color 7 
+           background-color cob-color-black. 
+           05  s-menu-screen-2. 
+               10  s-title-line
+                   foreground-color cob-color-white background-color 1. 
+                   15 line 1 pic x(80) from ws-empty-line.
+                   15 line 1 column 32 value "COBOL RSS Reader". 
+               10  s-header-line
+                   foreground-color cob-color-black background-color 7.
+                   15 line 2 pic x(80) from ws-empty-line.                   
+                   15 line 2 column 5 value "RSS Feed Name".
+               10  line 3  column 2 pic x to accept-item1. 
+               10  column 4                          
+                   foreground-color ws-display-text-color(1)       
+                   pic x(70) from ws-display-list-title(1).
+               10  column 4 
+                   foreground-color ws-display-text-color(1)
+                   pic x(70) from ws-display-list-title(1).
+               10  line 4  column 2 pic x to accept-item1. 
+               10  column 4 
+                   foreground-color ws-display-text-color(2)                   
+                   pic x(70) from ws-display-list-title(2).               
+               10  line 5  column 2 pic x to accept-item1. 
+               10  column 4 foreground-color ws-display-text-color(3)
+                   pic x(70) from ws-display-list-title(3).        
+               10  line 6  column 2 pic x to accept-item1. 
+               10  column 4 foreground-color ws-display-text-color(4)
+                   pic x(70) from ws-display-list-title(4).        
+               10  line 7  column 2 pic x to accept-item1. 
+               10  column 4 foreground-color ws-display-text-color(5)
+                   pic x(70) from ws-display-list-title(5).        
+               10  line 8  column 2 pic x to accept-item1. 
+               10  column 4 foreground-color ws-display-text-color(6)
+                   pic x(70) from ws-display-list-title(6).        
+               10  line 9  column 2 pic x to accept-item1. 
+               10  column 4 foreground-color ws-display-text-color(7)
+                   pic x(70) from ws-display-list-title(7).        
+               10  line 10  column 2 pic x to accept-item1. 
+               10  column 4 foreground-color ws-display-text-color(8)
+                   pic x(70) from ws-display-list-title(8).        
+               10  line 11  column 2 pic x to accept-item1. 
+               10  column 4 foreground-color ws-display-text-color(9)
+                   pic x(70) from ws-display-list-title(9).        
+               10  line 12  column 2 pic x to accept-item1. 
+               10  column 4 foreground-color ws-display-text-color(10)
+                   pic x(70) from ws-display-list-title(10).        
+               10  line 13  column 2 pic x to accept-item1. 
+               10  column 4 foreground-color ws-display-text-color(11)
+                   pic x(70) from ws-display-list-title(11).        
+               10  line 14  column 2 pic x to accept-item1. 
+               10  column 4 foreground-color ws-display-text-color(12)
+                   pic x(70) from ws-display-list-title(12).        
+               10  line 15  column 2 pic x to accept-item1. 
+               10  column 4 foreground-color ws-display-text-color(13)
+                   pic x(70) from ws-display-list-title(13).        
+               10  line 16  column 2 pic x to accept-item1. 
+               10  column 4 foreground-color ws-display-text-color(14)
+                   pic x(70) from ws-display-list-title(14).                            
+               10  line 17  column 2 pic x to accept-item1. 
+               10  column 4 foreground-color ws-display-text-color(15)
+                   pic x(70) from ws-display-list-title(15).                            
+               10  line 18  column 2 pic x to accept-item1. 
+               10  column 4 foreground-color ws-display-text-color(16)
+                   pic x(70) from ws-display-list-title(16).                            
+               10  s-help-line-1
+                   foreground-color cob-color-black background-color 7.
+                   15  line 20 pic x(80) from ws-empty-line.                   
+                   15  line 20 column 8
+                       value 
+            "Arrow Keys or Tab to move between feeds. Enter to select.".
+               10  s-help-text-2.
+                   15  foreground-color cob-color-black 
+                   background-color cob-color-white line 21 column 2
+                   value "F1".
+                   15  foreground-color cob-color-white 
+                   background-color cob-color-black line 21 column 5
+                   value "Help".
+                   15  foreground-color cob-color-black 
+                   background-color cob-color-white line 21 column 10
+                   value "F3".
+                   15  foreground-color cob-color-white 
+                   background-color cob-color-black line 21 column 13
+                   value "Add Feed".
+                   15  foreground-color cob-color-black 
+                   background-color cob-color-white line 21 column 22
+                   value "F4".
+                   15  foreground-color cob-color-white 
+                   background-color cob-color-black line 21 column 25
+                   value "Delete Feed".
+                   15  foreground-color cob-color-black 
+                   background-color cob-color-white line 21 column 37
+                   value "F5".
+                   15  foreground-color cob-color-white 
+                   background-color cob-color-black line 21 column 40
+                   value "Refresh".
+                   15  foreground-color cob-color-black 
+                   background-color cob-color-white line 21 column 48
+                   value "F8".
+                   15  foreground-color cob-color-white 
+                   background-color cob-color-black line 21 column 51
+                   value "Export".
+                   15  foreground-color cob-color-black
+                   background-color cob-color-white line 21 column 58
+                   value "F9".
+                   15  foreground-color cob-color-white
+                   background-color cob-color-black line 21 column 61
+                   value "Config".
+                   15  foreground-color cob-color-black
+                   background-color cob-color-white line 21 column 68
+                   value "F10".
+                   15  foreground-color cob-color-white 
+                   background-color cob-color-black line 21 column 72
+                   value "Exit".
+       01  s-blank-screen.
+           05 blank screen.
+       01  s-message-screen           
+           blank screen 
+           foreground-color 7 
+           background-color cob-color-black. 
+           05 s-message-screen-2. 
+               10  s-title-line
+                   foreground-color cob-color-white background-color 1. 
+                   15  line 11 column 10 pic x(60) from ws-empty-line.
+                   15  line 11 column 12 pic x(50) from ws-msg-title. 
+               10  s-spacer-line
+                   foreground-color cob-color-black background-color 7.
+                   15  line 12 column 10 pic x(60) from ws-empty-line.                   
+               10  s-message-line-1
+                   foreground-color cob-color-black background-color 7.
+                   15  line 13 column 10 pic x(60) from ws-empty-line.                   
+                   15  line 13 column 12 
+                       pic x(50) from ws-msg-body-text(1). 
+               10  s-message-line-2
+                   foreground-color cob-color-black background-color 7.
+                   15  line 14 column 10 pic x(60) from ws-empty-line.                   
+                   15  line 14 column 12 
+                       pic x(50) from ws-msg-body-text(2). 
+               10  s-spacer-line
+                   foreground-color cob-color-black background-color 7.
+                   15  line 15 column 10 pic x(60) from ws-empty-line.    
+               10  s-input-line
+                   foreground-color 7 background-color 7.
+                   15  line 15  column 10 pic x to ws-msg-input. 
        procedure division using l-refresh-on-start.
            set environment 'COB_SCREEN_EXCEPTIONS' to 'Y'.
            set environment 'COB_SCREEN_ESC'        to 'Y'.

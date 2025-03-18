@@ -43,7 +43,7 @@
            END-PERFORM
            CLOSE DATA-FILE.
            GOBACK.
-           DISPAY-DET SECTION.
+       DISPAY-DET SECTION.
            DISPLAY-DET-S.
            DISPLAY "ID: " DET-ID " STR: " DET-TIME " DET-NUM: " DET-NUM.
            DISPLAY-DET-E.

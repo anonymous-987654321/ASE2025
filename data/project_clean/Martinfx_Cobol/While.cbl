@@ -8,7 +8,7 @@
        MAIN-PROCEDURE.
            PERFORM WHILE-LOOP.
            GOBACK.
-           WHILE-LOOP SECTION.
+       WHILE-LOOP SECTION.
            PERFORM UNTIL W-I <= 0
              DISPLAY W-I
              COMPUTE W-I = W-I - 1

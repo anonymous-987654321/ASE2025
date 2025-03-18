@@ -36,7 +36,9 @@
        78  ws-file-missing-optional        value "05".
        linkage section.
        01  l-new-history-text            pic x(75).
-       copy "engine/copybooks/l-action-history.cpy".
+       01  l-action-history.
+           05  l-action-history-item     occurs 150 times.
+               10  l-action-history-text pic x(75).
        procedure division using 
                l-new-history-text l-action-history.
        main-procedure.

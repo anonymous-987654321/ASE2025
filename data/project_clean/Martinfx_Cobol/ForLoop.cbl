@@ -11,7 +11,7 @@
            PERFORM FOR-UNTIL-LOOP.
            PERFORM FOR-VAIRING-LOOP.
            GOBACK.
-           FOR-UNTIL-LOOP SECTION.
+       FOR-UNTIL-LOOP SECTION.
            PERFORM UNTIL W-I > 20
              MOVE W-I TO W-J
              ADD 1 TO W-I
@@ -21,7 +21,7 @@
                ADD 1 TO W-J
              END-PERFORM
            END-PERFORM.
-           FOR-VAIRING-LOOP SECTION.
+       FOR-VAIRING-LOOP SECTION.
            ADD 0 TO W-I
            ADD 0 TO W-J
            ADD 0 TO W-K

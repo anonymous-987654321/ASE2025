@@ -55,7 +55,16 @@
        01  Interest         Pic 9(9)V9999.
        01  Number-Periods   Pic 999.
        LINKAGE SECTION.
-       COPY EPSPDATA.
+       01  EPSPDATA.
+           03 EPSPDATA-PRINCIPLE-DATA   PIC S9(9)V99 COMP.
+           03 EPSPDATA-NUMBER-OF-YEARS  PIC S9(4)    COMP.
+           03 EPSPDATA-NUMBER-OF-MONTHS PIC S9(4)    COMP.
+           03 EPSPDATA-QUOTED-INTEREST-RATE
+                                        PIC S9(2)v9(3) COMP.
+           03 EPSPDATA-YEAR-MONTH-IND   PIC X.
+           03 EPSPDATA-RETURN-MONTH-PAYMENT
+                                        PIC S9(7)V99 COMP.
+           03 EPSPDATA-RETURN-ERROR     PIC X(80).
        PROCEDURE DIVISION USING EPSPDATA.
        A000-MAINLINE.
            MOVE 0 TO VALIDATION-INDICATOR.

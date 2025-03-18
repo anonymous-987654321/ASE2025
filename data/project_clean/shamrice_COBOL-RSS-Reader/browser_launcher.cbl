@@ -24,7 +24,8 @@
        linkage section.
        01  l-item-link                          pic x any length.
        screen section.
-       copy "./screens/blank_screen.cpy".
+       01  s-blank-screen.
+           05 blank screen.
        procedure division using 
            l-item-link.
        main-procedure.

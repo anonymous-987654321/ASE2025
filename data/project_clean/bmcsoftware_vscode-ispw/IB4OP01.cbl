@@ -15,7 +15,31 @@
        DATA DIVISION.                                                           
        FILE SECTION.                                                            
        FD  TRANS-FILE RECORDING MODE F BLOCK 0 RECORDS.                         
-           COPY TRANS.                                                          
+       01  TRAN-INQY.
+           03  TI-TRAN             PIC XX.
+           03  TI-ORDR-NO          PIC X(6).
+           03  FILLER              PIC X(72).
+       01  TRAN-ORD-BASE.
+           03  FILLER              PIC X(8).
+           03  TB-CUST-NO          PIC X(6).
+           03  TB-DESCR            PIC X(40).
+           03  TB-PO-QTY           PIC 9(5).
+           03  TB-PO-QTY-X REDEFINES TB-PO-QTY PIC X(5).
+           03  TB-PO-AMT           PIC 9(5)V99.
+           03  TB-PO-AMT-X REDEFINES TB-PO-AMT PIC X(7).
+           03  TB-ORDR-TYPE        PIC XX.
+           03  TB-PRTY             PIC X.
+           03  FILLER              PIC X(11).
+       01  TRAN-ACTIVITY.
+           03  FILLER              PIC X(8).
+           03  TA-ORD-STATUS       PIC 99.
+           03  TA-ACT-DATE         PIC X(8).
+           03  TA-LAST-ACT-DATE    PIC X(8).
+           03  TA-UNITS-STARTED    PIC 9(5).
+           03  TA-UNITS-STARTED-X REDEFINES TA-UNITS-STARTED PIC X(5).
+           03  TA-UNITS-COMPL      PIC 9(5).
+           03  TA-UNITS-COMPL-X REDEFINES TA-UNITS-COMPL PIC X(5).
+           03  FILLER              PIC X(44).
        FD  RPT-FILE RECORDING MODE F BLOCK 0 RECORDS.                           
        01  RPT-REC.                                                             
            03  R-CC               PIC X.                                        
@@ -190,7 +214,34 @@
        01  SSA-2.                                                               
            03  S2-SEG-NAME     PIC X(8) VALUE IS 'ORDR010 '.                    
            03  FILLER          PIC X VALUE ' '.                                 
-           COPY ORDR.                                                           
+       01  ORDER-ROOT-DATA.                                                     
+           05 ORDER-ROOT-KEY.                                                   
+               07 ORDER-NUMBER-PREFIX      PIC  X(02).                          
+               07 ORDER-NUMBER             PIC  9(04).                          
+           05  ORDKEY-REDEF  REDEFINES    ORDER-ROOT-KEY                        
+                                           PIC  X(06).                          
+           05 ORDER-DESCRIPTION            PIC  X(40).                          
+           05 CUSTOMER-NUMBER              PIC  X(06).                          
+           05 PLANNED-ORDER-QUANTITY       PIC  S9(05)       COMP-3.            
+           05 PLANNED-ORDER-AMOUNT         PIC  9(05)V99     COMP-3.            
+           05 ORDER-TYPE                   PIC  X(02).                          
+           05 ACTUAL-ORDER-QUANTITY        PIC  S9(05)       COMP-3.            
+           05 TOTAL-SCRAP-QUANTITY         PIC  S9(05)       COMP-3.            
+           05 TOTAL-SCRAP-REDEFINES                                             
+               REDEFINES TOTAL-SCRAP-QUANTITY PIC  X(03).                       
+           05 ORDER-STATUS                 PIC  9(02).                          
+           05 FILLER                       PIC  X(01).                          
+           05 FIRST-ACTIVITY-DATE.                                              
+               07 FIRST-ACTIVITY-DATE-YR   PIC  X(04).                          
+               07 FIRST-ACTIVITY-DATE-MM   PIC  X(02).                          
+               07 FIRST-ACTIVITY-DATE-DD   PIC  X(02).                          
+           05 LAST-ACTIVITY-DATE           PIC  X(08).                          
+           05 WEEKLY-STATUS-DATA OCCURS       5 TIMES.                          
+               07 NUMBER-UNITS-STARTED     PIC  9(05)        COMP-3.            
+               07 NUMBER-UNITS-COMPLETED   PIC  9(05)        COMP-3.            
+               07 PERCENTAGE-STARTED       PIC  S9(05)V9(03) COMP-3.            
+               07 PERCENTAGE-COMPLETE      PIC  S9(05)V9(03) COMP-3.            
+           05 PRIORITY-CODE                PIC  X(01).                          
        LINKAGE SECTION.                                                         
        01  DBPCB.                                                               
            02  DBD-NAME        PIC  X(8).                                       

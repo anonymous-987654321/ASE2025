@@ -10,13 +10,120 @@
        data division.
        file section.
        working-storage section.
-       copy screenio.
-       copy "shared/copybooks/ws-file-info.cpy".
-       copy "shared/copybooks/ws-constants.cpy".      
-       copy "shared/copybooks/ws-enemy-data.cpy".
-       copy "shared/copybooks/ws-tile-map-table-matrix.cpy".
-       copy "shared/copybooks/ws-teleport-data.cpy".
-       copy "shared/copybooks/ws-item-data.cpy".
+       01  ws-map-files.  
+           05  ws-map-name             pic x(15) value "VOIDSPACE".
+           05  ws-map-name-temp        pic x(15) value "VOIDSPACE".           
+           05  ws-map-dat-file         pic x(15).               
+           05  ws-map-tel-file         pic x(15).
+           05  ws-map-enemy-file       pic x(15).
+           05  ws-map-item-file        pic x(15).
+       01  ws-map-file-statuses.
+           05  ws-map-file-status      pic xx.
+           05  ws-teleport-file-status pic xx.
+           05  ws-enemy-file-status    pic xx.
+           05  ws-item-file-status     pic xx.
+       01  black                          constant as 0.
+       01  blue                           constant as 1.
+       01  green                          constant as 2.
+       01  cyan                           constant as 3.
+       01  red                            constant as 4.
+       01  magenta                        constant as 5.
+       01  yellow                         constant as 6.  
+       01  white                          constant as 7.
+       78  ws-no-tile-effect-id           value 0.    
+       78  ws-teleport-effect-id          value 1.
+       78  ws-conveyor-right-effect-id    value 2.
+       78  ws-conveyor-down-effect-id     value 3.
+       78  ws-conveyor-left-effect-id     value 4.
+       78  ws-conveyor-up-effect-id       value 5.
+       78  ws-conveyor-reverse-effect-id  value 6.
+       78  ws-player-start-effect-id      value 98.
+       78  ws-load-map-tele-return-code   value 1.
+       78  ws-max-view-height             value 20.
+       78  ws-max-view-width              value 50.
+       78  ws-max-map-height              value 25.
+       78  ws-max-map-width               value 80.
+       78  ws-max-num-enemies             value 99.      
+       78  ws-max-num-teleports           value 999.
+       78  ws-max-num-items               value 999.
+       78  ws-file-status-ok              value "00".
+       78  ws-file-status-eof             value "10".
+       78  ws-load-status-fail            value 9.
+       78  ws-load-status-read-fail       value 8.
+       78  ws-load-status-bad-data        value 7.
+       78  ws-load-status-success         value 0.       
+       78  ws-save-status-fail            value 9.
+       78  ws-save-status-success         value 0.
+       78  ws-data-file-ext               value ".DAT".
+       78  ws-teleport-file-ext           value ".TEL".
+       78  ws-enemy-file-ext              value ".BGS".
+       78  ws-item-file-ext               value ".ITM".
+       01  ws-enemy-data.
+           05  ws-cur-num-enemies           pic 99 comp value 0.
+           05  ws-enemy             occurs 0 to ws-max-num-enemies times
+                                    depending on ws-cur-num-enemies.
+               10  ws-enemy-name           pic x(16) value 'NONAME'.
+               10  ws-enemy-hp.
+                   15  ws-enemy-hp-total    pic 999 comp value 10.
+                   15  ws-enemy-hp-current  pic 999 comp value 10.
+               10  ws-enemy-attack-damage   pic 999 comp value 1.
+               10  ws-enemy-pos.
+                   15  ws-enemy-y           pic 99.
+                   15  ws-enemy-x           pic 99.
+               10  ws-enemy-color           pic 9 value 4.
+               10  ws-enemy-char            pic x.
+               10  ws-enemy-status              pic 9 comp value 3.
+                   88  ws-enemy-status-alive    value 0.
+                   88  ws-enemy-status-dead     value 1.
+                   88  ws-enemy-status-attacked value 2.
+                   88  ws-enemy-status-other    value 3.
+               10  ws-enemy-movement-ticks.
+                   15  ws-enemy-current-ticks   pic 999 comp.
+                   15  ws-enemy-max-ticks       pic 999 comp.
+               10  ws-enemy-exp-worth           pic 9(4) comp.
+       01  ws-tile-map-table-matrix.
+           05  ws-tile-map           occurs ws-max-map-height times.
+               10  ws-tile-map-data   occurs ws-max-map-width times.
+                   15  ws-tile-fg                   pic 9.   
+                   15  ws-tile-bg                   pic 9.
+                   15  ws-tile-char                 pic x.
+                   15  ws-tile-highlight            pic a value 'N'.
+                       88 ws-tile-is-highlight      value 'Y'.
+                       88 ws-tile-not-highlight     value 'N'.
+                   15  ws-tile-blocking             pic a value 'N'.
+                       88  ws-tile-is-blocking      value 'Y'.
+                       88  ws-tile-not-blocking     value 'N'.  
+                   15  ws-tile-blinking             pic a value 'N'.
+                       88  ws-tile-is-blinking      value 'Y'.
+                       88  ws-tile-not-blinking     value 'N'.
+                   15  ws-tile-effect-id            pic 99 comp.  
+                   15  ws-tile-visibility           pic 999 comp.    
+       01  ws-teleport-data.
+           05  ws-cur-num-teleports        pic 999 comp.
+           05  ws-teleport-data-record  occurs 0 to ws-max-num-teleports
+                                      depending on ws-cur-num-teleports.
+               10  ws-teleport-pos.
+                   15  ws-teleport-y        pic S99.
+                   15  ws-teleport-x        pic S99.
+               10  ws-teleport-dest-pos.
+                   15  ws-teleport-dest-y   pic S99.
+                   15  ws-teleport-dest-x   pic S99.
+               10  ws-teleport-dest-map     pic x(15).
+       01  ws-item-data.
+           05  ws-cur-num-items            pic 999 comp.
+           05  ws-item-data-record         occurs 0 to ws-max-num-items
+                                          depending on ws-cur-num-items.
+               10  ws-item-name            pic x(16).                                          
+               10  ws-item-pos.
+                   15  ws-item-y           pic S99.
+                   15  ws-item-x           pic S99.
+               10  ws-item-taken           pic a value 'N'.
+                   88  ws-item-is-taken    value 'Y'.
+                   88  ws-item-not-taken   value 'N'.               
+               10  ws-item-effect-id       pic 99.
+               10  ws-item-worth           pic 999.
+               10  ws-item-color           pic 9. 
+               10  ws-item-char            pic x.
        78  ws-default-draw-visibility  value 3.
        01  ws-mouse-flags              pic 9(4).
        01  ws-crt-status.

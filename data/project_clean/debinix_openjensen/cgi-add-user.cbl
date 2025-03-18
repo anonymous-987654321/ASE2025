@@ -47,7 +47,8 @@
        EXEC SQL INCLUDE SQLCA END-EXEC.
        PROCEDURE DIVISION.
        0000-main.
-           COPY setupenv_openjensen.
+           SET ENVIRONMENT "OJ_DBG" TO "1"
+           SET ENVIRONMENT "OJ_LOG" TO "1"           
            PERFORM A0100-init
            IF is-valid-init
                 PERFORM B0100-connect
@@ -58,7 +59,7 @@
            END-IF
            PERFORM C0100-closedown
            GOBACK
-        .
+       .
        A0100-init.
            CALL 'wui-print-header' USING wn-rtn-code
            CALL 'wui-start-html' USING wc-pagetitle
@@ -66,7 +67,7 @@
            IF wn-rtn-code = ZERO
                PERFORM A0110-init-add-action
            END-IF
-        .
+       .
        A0110-init-add-action.
            MOVE ZERO TO wn-rtn-code
            MOVE SPACE TO wc-post-value
@@ -154,7 +155,7 @@
            ELSE
                 SET is-db-connected TO true
            END-IF
-        .
+       .
        B0200-add-dataitem.
            PERFORM B0210-does-username-exist
            IF not name-is-in-table
@@ -198,7 +199,7 @@
            EXEC SQL
                CLOSE cursadduser
            END-EXEC
-        .
+       .
        B0220-get-new-row-number.
            EXEC SQL
              DECLARE cursaddid cursor FOR
@@ -252,20 +253,40 @@
                 MOVE 'användare adderad' TO wc-printscr-string
                 CALL 'ok-printscr' USING wc-printscr-string
            END-IF
-        .
+       .
        B0240-commit-work.
            EXEC SQL
                COMMIT WORK
            END-EXEC
-        .
+       .
        C0100-closedown.
           CALL 'wui-end-html' USING wn-rtn-code
-        .
+       .
        Z0100-error-routine.
-           COPY z0100-error-routine.
+           EVALUATE SQLSTATE
+               WHEN  "02000"
+                   MOVE 'Data återfinns ej i databasen'
+                       TO wc-printscr-string
+                   CALL 'stop-printscr' USING wc-printscr-string 
+              WHEN  "08003"
+              WHEN  "08001"
+                   MOVE 'Anslutning till databas misslyckades'
+                       TO wc-printscr-string
+                   CALL 'stop-printscr' USING wc-printscr-string 
+              WHEN  "23503"
+                   MOVE 'Kan ej ta bort data - pga tabellberoenden'
+                       TO wc-printscr-string
+                   CALL 'stop-printscr' USING wc-printscr-string                              
+              WHEN  SPACE
+                   MOVE 'Obekant fel - kontakta leverantören'
+                       TO wc-printscr-string
+                   CALL 'stop-printscr' USING wc-printscr-string  
+              WHEN  OTHER
+                   CALL 'error-printscr' USING SQLSTATE SQLERRMC
+           END-EVALUATE
        .
        Z0200-disconnect.
            EXEC SQL
                DISCONNECT ALL
            END-EXEC
-        .
+       .

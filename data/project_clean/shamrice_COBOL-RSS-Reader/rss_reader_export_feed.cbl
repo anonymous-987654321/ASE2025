@@ -8,13 +8,28 @@
            crt status is ws-crt-status.
        input-output section.
            file-control.                              
-               copy "./copybooks/filecontrol/rss_list_file.cpy".
+               select optional fd-rss-list-file
+               assign to dynamic ws-rss-list-file-name
+               organization is indexed
+               access is dynamic
+               record key is f-rss-link
+               alternate record key is f-rss-feed-id.               
        data division.
        file section.
-           copy "./copybooks/filedescriptor/fd_rss_list_file.cpy".
+           FD fd-rss-list-file.
+           01  f-rss-list-record.               
+               05 f-rss-feed-id                pic 9(5) value zeros.
+               05 f-rss-feed-status            pic 9 value zero.
+               05 f-rss-title                  pic x(128) value spaces.               
+               05 f-rss-dat-file-name          pic x(128) value spaces.
+               05 f-rss-link                   pic x(256) value spaces.
        working-storage section.
-       copy "screenio.cpy".
-       copy "./copybooks/wsrecord/ws-rss-list-record.cpy".
+       01  ws-rss-list-record.           
+           05  ws-rss-feed-id                  pic 9(5) value zeros. 
+           05  ws-rss-feed-status              pic 9 value zero.          
+           05  ws-rss-title                    pic x(128) value spaces.           
+           05  ws-rss-dat-file-name            pic x(128) value spaces.
+           05  ws-rss-link                     pic x(256) value spaces.
        01  ws-crt-status. 
            05  ws-key1                       pic x. 
            05  ws-key2                       pic x. 
@@ -39,9 +54,74 @@
        linkage section.
        01  l-rss-feed-id                     pic 9(5).
        screen section.
-       copy "./screens/blank_screen.cpy".
-       copy "./screens/rss_export_feed_screen.cpy".
-       copy "./screens/message_screen.cpy".
+       01  s-blank-screen.
+           05 blank screen.
+       01  s-rss-export-feed-screen           
+           blank screen 
+           foreground-color 7 
+           background-color cob-color-black. 
+           05 s-rss-export-feed-screen-2. 
+               10  s-title-line
+                   foreground-color cob-color-white background-color 1. 
+                   15  line 4 column 1 pic x(80) from ws-empty-line.
+                   15  line 4 column 35 value "Export RSS Feed". 
+               10  s-spacer-line
+                   foreground-color cob-color-black background-color 7.
+                   15  line 5 column 1 pic x(80) from ws-empty-line.                 
+               10  s-rss-export-msg-line-1
+                   foreground-color cob-color-black background-color 7.
+                   15  line 6 column 1 pic x(80) from ws-empty-line.
+                   15  line 6 column 2 pic x(70) from ws-export-line-1.   
+               10  s-rss-export-msg-line-2
+                   foreground-color cob-color-black background-color 7.
+                   15  line 7 column 1 pic x(80) from ws-empty-line.
+                   15  line 7 column 2 pic x(70) from ws-export-line-2.   
+               10  s-spacer-line
+                   foreground-color cob-color-black background-color 7.
+                   15  line 8 column 1 pic x(80) from ws-empty-line.                   
+               10  s-input-line
+                   foreground-color cob-color-black background-color 7.
+                   15  line 9 column 1 pic x(80) from ws-empty-line.                   
+                   15  line 9 column 2 pic x(78) to ws-export-name. 
+                10  s-spacer-line
+                   foreground-color cob-color-black background-color 7.
+                   15  line 10 column 1 pic x(80) from ws-empty-line.                   
+               10  s-message-line
+                   foreground-color cob-color-black background-color 7.
+                   15  line 11 column 1 pic x(80) from ws-empty-line.
+                   15  line 11 column 2 
+               value "Press Enter to Export RSS Feed or ESC to Cancel.".   
+               10  s-spacer-line
+                   foreground-color cob-color-black background-color 7.
+                   15  line 12 column 1 pic x(80) from ws-empty-line.                   
+       01  s-message-screen           
+           blank screen 
+           foreground-color 7 
+           background-color cob-color-black. 
+           05 s-message-screen-2. 
+               10  s-title-line
+                   foreground-color cob-color-white background-color 1. 
+                   15  line 11 column 10 pic x(60) from ws-empty-line.
+                   15  line 11 column 12 pic x(50) from ws-msg-title. 
+               10  s-spacer-line
+                   foreground-color cob-color-black background-color 7.
+                   15  line 12 column 10 pic x(60) from ws-empty-line.                   
+               10  s-message-line-1
+                   foreground-color cob-color-black background-color 7.
+                   15  line 13 column 10 pic x(60) from ws-empty-line.                   
+                   15  line 13 column 12 
+                       pic x(50) from ws-msg-body-text(1). 
+               10  s-message-line-2
+                   foreground-color cob-color-black background-color 7.
+                   15  line 14 column 10 pic x(60) from ws-empty-line.                   
+                   15  line 14 column 12 
+                       pic x(50) from ws-msg-body-text(2). 
+               10  s-spacer-line
+                   foreground-color cob-color-black background-color 7.
+                   15  line 15 column 10 pic x(60) from ws-empty-line.    
+               10  s-input-line
+                   foreground-color 7 background-color 7.
+                   15  line 15  column 10 pic x to ws-msg-input. 
        procedure division using l-rss-feed-id.
        set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
        set environment 'COB_SCREEN_ESC'        TO 'Y'.

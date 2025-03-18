@@ -319,8 +319,31 @@
        01  ZK-LENGTH              PIC S9(04) COMP VALUE ZEROES.
        01  ZF-LENGTH              PIC S9(04) COMP VALUE ZEROES.
        01  DELETE-LENGTH          PIC S9(04) COMP VALUE 8.
-       COPY ZECSZKC.
-       COPY ZECSZFC.
+       01  ZK-RECORD.
+           02  ZK-KEY             PIC X(255) VALUE LOW-VALUES.
+           02  FILLER             PIC  X(01) VALUE LOW-VALUES.
+           02  ZK-ZF-KEY.
+               05  ZK-ZF-IDN      PIC  X(06) VALUE LOW-VALUES.
+               05  ZK-ZF-NC       PIC  X(02) VALUE LOW-VALUES.
+           02  ZK-SEGMENTS        PIC  X(01) VALUE SPACES.
+           02  FILLER             PIC X(247) VALUE SPACES.
+       01  ZF-PREFIX              PIC S9(08) VALUE 356    COMP.
+       01  ZF-RECORD.
+           02  ZF-KEY-16.
+               05  ZF-KEY.
+                 10  ZF-KEY-IDN   PIC  X(06) VALUE LOW-VALUES.
+                 10  ZF-KEY-NC    PIC  X(02) VALUE LOW-VALUES.
+               05  ZF-SEGMENT     PIC  9(04) VALUE ZEROES COMP.
+               05  ZF-SUFFIX      PIC  9(04) VALUE ZEROES COMP.
+               05  ZF-ZEROES      PIC  9(08) VALUE ZEROES COMP.
+           02  ZF-ABS             PIC S9(15) VALUE ZEROES COMP-3.
+           02  ZF-TTL             PIC S9(07) VALUE ZEROES COMP-3.
+           02  ZF-SEGMENTS        PIC  9(04) VALUE ZEROES COMP.
+           02  ZF-EXTRA           PIC  X(15).
+           02  ZF-ZK-KEY          PIC  X(255).
+           02  ZF-MEDIA           PIC  X(56).
+           02  ZF-DATA            PIC  X(32000).
+           02  FILLER             PIC  X(344).
        01  DELETE-RECORD.
            02  DELETE-KEY-16.
                05  DELETE-KEY     PIC  X(08).

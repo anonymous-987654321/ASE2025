@@ -47,7 +47,7 @@
                PERFORM 2000-CALC-END-OF-MONTH
                MOVE 'Y' TO CHECKED-FOR-EOM-SW.
            GOBACK.
-         1000-CALC-YRS-OF-SERVICE.
+       1000-CALC-YRS-OF-SERVICE.
              IF HIRE-YY > RUN-YY                                        11032000
                    COMPUTE YRS-OF-SERVICE = (100 + RUN-YY) - HIRE-YY    11032000
                ELSE                                                     11032000
@@ -58,13 +58,13 @@
                  IF HIRE-MM = RUN-MM
                      IF HIRE-DD > RUN-DD
                         COMPUTE YRS-OF-SERVICE = YRS-OF-SERVICE - 1.
-         2000-CALC-END-OF-MONTH.
+       2000-CALC-END-OF-MONTH.
              IF RUN-MM = 02
                  PERFORM 3000-CALC-LEAP-YEAR
              ELSE
                  IF DATE-DD(RUN-MM) = RUN-DD
                      MOVE 'Y' TO EOM-SW.
-         3000-CALC-LEAP-YEAR.
+       3000-CALC-LEAP-YEAR.
              DIVIDE RUN-YY BY 4
                  GIVING HOLD-YEARS
                  REMAINDER EXTRA-YEARS.

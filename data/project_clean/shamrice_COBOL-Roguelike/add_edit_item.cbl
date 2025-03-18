@@ -15,13 +15,86 @@
                file status is ws-item-list-file-status.
        data division.
        file section.
-       copy "shared/copybooks/fd-item-list-data.cpy".
+       fd  fd-item-list-data.
+       01  f-item-list-data-record.
+           05  f-item-id              pic 999.
+           05  f-item-name            pic x(16).
+           05  f-item-effect-id       pic 99.
+           05  f-item-worth           pic 999.
+           05  f-item-color           pic 9. 
+           05  f-item-char            pic x.
+           05  f-item-highlight       pic a.
+           05  f-item-blink           pic a.
        working-storage section.
-       copy screenio.
-       copy "shared/copybooks/ws-constants.cpy".      
-       copy "shared/copybooks/ws-item-data.cpy".
-       copy "shared/copybooks/ws-item-list-file.cpy".
-       copy "shared/copybooks/ws-item-list-data.cpy".
+       01  black                          constant as 0.
+       01  blue                           constant as 1.
+       01  green                          constant as 2.
+       01  cyan                           constant as 3.
+       01  red                            constant as 4.
+       01  magenta                        constant as 5.
+       01  yellow                         constant as 6.  
+       01  white                          constant as 7.
+       78  ws-no-tile-effect-id           value 0.    
+       78  ws-teleport-effect-id          value 1.
+       78  ws-conveyor-right-effect-id    value 2.
+       78  ws-conveyor-down-effect-id     value 3.
+       78  ws-conveyor-left-effect-id     value 4.
+       78  ws-conveyor-up-effect-id       value 5.
+       78  ws-conveyor-reverse-effect-id  value 6.
+       78  ws-player-start-effect-id      value 98.
+       78  ws-load-map-tele-return-code   value 1.
+       78  ws-max-view-height             value 20.
+       78  ws-max-view-width              value 50.
+       78  ws-max-map-height              value 25.
+       78  ws-max-map-width               value 80.
+       78  ws-max-num-enemies             value 99.      
+       78  ws-max-num-teleports           value 999.
+       78  ws-max-num-items               value 999.
+       78  ws-file-status-ok              value "00".
+       78  ws-file-status-eof             value "10".
+       78  ws-load-status-fail            value 9.
+       78  ws-load-status-read-fail       value 8.
+       78  ws-load-status-bad-data        value 7.
+       78  ws-load-status-success         value 0.       
+       78  ws-save-status-fail            value 9.
+       78  ws-save-status-success         value 0.
+       78  ws-data-file-ext               value ".DAT".
+       78  ws-teleport-file-ext           value ".TEL".
+       78  ws-enemy-file-ext              value ".BGS".
+       78  ws-item-file-ext               value ".ITM".
+       01  ws-item-data.
+           05  ws-cur-num-items            pic 999 comp.
+           05  ws-item-data-record         occurs 0 to ws-max-num-items
+                                          depending on ws-cur-num-items.
+               10  ws-item-name            pic x(16).                                          
+               10  ws-item-pos.
+                   15  ws-item-y           pic S99.
+                   15  ws-item-x           pic S99.
+               10  ws-item-taken           pic a value 'N'.
+                   88  ws-item-is-taken    value 'Y'.
+                   88  ws-item-not-taken   value 'N'.               
+               10  ws-item-effect-id       pic 99.
+               10  ws-item-worth           pic 999.
+               10  ws-item-color           pic 9. 
+               10  ws-item-char            pic x.
+       01  ws-item-list-file-name      pic x(15) value "ITEM-LIST.LST".
+       01  ws-item-list-file-status    pic xx.
+       01  ws-item-list-data.
+           05  ws-cur-num-list-items       pic 999 comp.
+           05  ws-item-list-data-record    occurs 0 to 999 depending 
+                                           on ws-cur-num-list-items.
+               10  ws-item-list-id                 pic 999.
+               10  ws-item-list-name               pic x(16).                                          
+               10  ws-item-list-effect-id          pic 99.
+               10  ws-item-list-worth              pic 999.
+               10  ws-item-list-color              pic 9. 
+               10  ws-item-list-char               pic x.
+               10  ws-item-list-highlight-sw       pic a value 'N'.
+                   88  ws-item-list-is-highlight   value 'Y'.
+                   88  ws-item-lsit-not-highlight  value 'N'.
+               10  ws-item-list-blink-sw           pic a value 'N'.    
+                   88  ws-item-list-is-blink       value 'Y'.
+                   88  ws-item-list-not-blink      value 'N'.           
        01  ws-mouse-flags              pic 9(4).
        01  ws-crt-status.
            05  ws-crt-status-key-1     pic 99.
@@ -44,7 +117,19 @@
        01  ws-load-return-code          pic 9.
        01  ws-save-return-code          pic 9.
        linkage section.
-       copy "item_creator/copybooks/l-item-list-data-record.cpy".
+       01  l-item-list-data-record.               
+           10  l-item-list-id                 pic 999.
+           10  l-item-list-name               pic x(16).                                          
+           10  l-item-list-effect-id          pic 99.
+           10  l-item-list-worth              pic 999.
+           10  l-item-list-color              pic 9. 
+           10  l-item-list-char               pic x.
+           10  l-item-list-highlight-sw       pic a value 'N'.
+               88  l-item-list-is-highlight   value 'Y'.
+               88  l-item-lsit-not-highlight  value 'N'.
+           10  l-item-list-blink-sw           pic a value 'N'.    
+                88  l-item-list-is-blink       value 'Y'.
+                88  l-item-list-not-blink      value 'N'.   
        01  l-return-code               pic 9.
        screen section.
        01  s-add-edit-item-screen.

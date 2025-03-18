@@ -54,7 +54,13 @@
            03 WS-MAX-FIELD           PIC 9(2) COMP.
            03 WS-DEC-ADJUST          PIC 9.
        LINKAGE SECTION.
-       COPY EPSNBRPM.
+       01  EPS-NUMBER-VALIDATION.
+           03 EPSPARM-VALIDATE-DATA     PIC X(13).
+           03 EPSPARM-MAX-LENGTH        PIC 99.
+           03 EPSPARM-NUMBER            PIC 9(13).
+           03 EPSPARM-DECIMAL           PIC V9(13).
+           03 EPSPARM-BINARY-NUMBER     PIC 9(9)V99 COMP.
+           03 EPSPARM-RETURN-ERROR      PIC X(80).
        PROCEDURE DIVISION USING EPS-NUMBER-VALIDATION.
        A000-MAINLINE.
            MOVE EPSPARM-MAX-LENGTH              TO WS-IDX.

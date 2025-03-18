@@ -4,7 +4,7 @@
        CONFIGURATION SECTION.
        DATA DIVISION.
        WORKING-STORAGE SECTION.
-        01  WS-HEADER.
+       01  WS-HEADER.
            03 WS-EYECATCHER            PIC X(16)
                                         VALUE 'LGUCUS01------WS'.
            03 WS-TRANSID               PIC X(4).
@@ -51,7 +51,6 @@
        01 LGUCDB01                     PIC X(8) VALUE 'LGUCDB01'.
        LINKAGE SECTION.
        01  DFHCOMMAREA.
-             COPY LGCMAREA.
        PROCEDURE DIVISION.
        MAINLINE SECTION.
            INITIALIZE WS-HEADER.

@@ -6,20 +6,65 @@
        special-names.
        input-output section.
            file-control.                              
-               copy "./copybooks/filecontrol/rss_list_file.cpy".
-               copy "./copybooks/filecontrol/rss_content_file.cpy".
+               select optional fd-rss-list-file
+               assign to dynamic ws-rss-list-file-name
+               organization is indexed
+               access is dynamic
+               record key is f-rss-link
+               alternate record key is f-rss-feed-id.               
+               select fd-rss-content-file
+               assign to dynamic ws-rss-content-file-name
+               organization is line sequential.
                select fd-report-file
                assign to dynamic ws-report-file-name
                organization is line sequential.
        data division.
        file section.
-           copy "./copybooks/filedescriptor/fd_rss_list_file.cpy".
-           copy "./copybooks/filedescriptor/fd_rss_content_file.cpy".
+           FD fd-rss-list-file.
+           01  f-rss-list-record.               
+               05 f-rss-feed-id                pic 9(5) value zeros.
+               05 f-rss-feed-status            pic 9 value zero.
+               05 f-rss-title                  pic x(128) value spaces.               
+               05 f-rss-dat-file-name          pic x(128) value spaces.
+               05 f-rss-link                   pic x(256) value spaces.
+           FD fd-rss-content-file.
+           01  f-rss-content-record.
+               05  f-feed-id                  pic 9(5) values zeros.
+               05  f-feed-title               pic x(128) value spaces.
+               05  f-feed-site-link           pic x(256) value spaces.
+               05  f-feed-desc                pic x(256) value spaces.
+               05  f-num-items                pic 9(6) value 0.               
+               05  f-items                    occurs 0 to 15000 times 
+                                              depending on f-num-items.              
+                   10  f-item-title          pic x(128) value spaces.
+                   10  f-item-link           pic x(256) value spaces.
+                   10  f-item-guid           pic x(256) value spaces.
+                   10  f-item-pub-date       pic x(128) value spaces.
+                   10  f-item-desc           pic x(512) value spaces.
            fd fd-report-file
            report is r-rss-report.
        working-storage section.
-       copy "./copybooks/wsrecord/ws-rss-list-record.cpy".
-       copy "./copybooks/wsrecord/ws-rss-record.cpy".
+       01  ws-rss-list-record.           
+           05  ws-rss-feed-id                  pic 9(5) value zeros. 
+           05  ws-rss-feed-status              pic 9 value zero.          
+           05  ws-rss-title                    pic x(128) value spaces.           
+           05  ws-rss-dat-file-name            pic x(128) value spaces.
+           05  ws-rss-link                     pic x(256) value spaces.
+       78  ws-max-rss-items                     value 15000.
+       77  ws-num-items-disp                    pic 9(6).
+       01  ws-rss-record.
+           05  ws-feed-id                       pic 9(5) value zeros.
+           05  ws-feed-title                    pic x(128) value spaces.
+           05  ws-feed-site-link                pic x(256) value spaces.
+           05  ws-feed-desc                     pic x(256) value spaces.
+           05  ws-num-items                     pic 9(6) value 0.           
+           05  ws-items              occurs 0 to ws-max-rss-items times 
+                                     depending on ws-num-items.
+               10 ws-item-title                 pic x(128) value spaces.
+               10 ws-item-link                  pic x(256) value spaces.
+               10 ws-item-guid                  pic x(256) value spaces.
+               10 ws-item-pub-date              pic x(128) value spaces.
+               10 ws-item-desc                  pic x(512) value spaces.
        01  ws-counter                        pic 9(6) comp value zeros.
        01  ws-rss-content-file-found-sw      pic x value 'N'.
            88  ws-content-file-found         value 'Y'.

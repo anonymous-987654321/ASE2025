@@ -46,7 +46,7 @@
            END-PERFORM
            CLOSE DATA-FILE.
            GOBACK.
-           DISPAY-DET SECTION.
+       DISPAY-DET SECTION.
            DISPLAY-DET-S.
                DISPLAY DETAILS.
                DISPLAY "DETAILS-ID: " DETAILS-ID
