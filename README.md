@@ -4,7 +4,7 @@ Common Business Oriented Language (COBOL) is a programming language used to deve
 
 ## Usage
 
-## Approach
+### Approach
 
 ### RQ1
 
