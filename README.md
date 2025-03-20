@@ -4,7 +4,7 @@ Common Business Oriented Language (COBOL) is a programming language used to deve
 
 ## Usage
 1. Run ```pip install -r requirements.txt``` to install all the requirements.
-2. Execute the notebooks in ```script``` sequentially to reproduce our approach and expirement results.
+2. Execute the notebooks in ```script``` sequentially to reproduce our approach and experiment results.
 
 ### Dataset
 ```data/projects``` provides the raw data of the 14 COBOL projects.
