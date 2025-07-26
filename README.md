@@ -9,9 +9,9 @@ Common Business Oriented Language (COBOL) is a programming language used to deve
 - `project_statistic_info/`: Provides statistics for the studied open-source COBOL projects, including lines of code (LOC), token counts, and project descriptions.
 - `Prompts/`: Contains all the prompt templates used for code, file, and project-level explanation generation in the paper.
 - `usefulness_analysis/`: Includes qualitative case studies 
-    - showing both good and bad examples across different levels, demonstrating the usefulness of our approach.
-    - `response_purpose_compare_explanation/`: Contains analysis that explains why we adopt a bottom-up strategy and focus on file-level purpose, showing how it leads to more consistent and accurate explanations.
-    - `function_level_example_text_processing/`: Provides function-level examples illustrating the benefits of incorporating a Text Processing LLM and the motivation for using it in generating refined summaries.
+    - `usefulness_analysis.xlsx` shows both good and bad examples across different levels, demonstrating the usefulness of our approach and reason.
+    - `response_purpose_compare_explanation.csv`: Contains analysis that explains why we adopt a bottom-up strategy and focus on file-level purpose, showing how it leads to more consistent and accurate explanations.
+    - `function_level_example_text_processing.png`: Provides function-level examples illustrating the benefits of incorporating a Text Processing LLM and the motivation for using it in generating refined summaries.
 
 ## Usage
 1. Run ```pip install -r requirements.txt``` to install all the requirements.
